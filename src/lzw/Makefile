@@ -1,7 +1,18 @@
 
-all: setup lzw.cpp
-	g++ -o lzw lzw.cpp -I.
-	mv lzw $(binDir)/lzw
+CC = gcc
 
-setup:
-	mkdir -p $(binDir)/lzw
+CFILES = lzw.c
+INCFILES = $(wildcard include/*.c) $(wildcard include/*.h)
+XFILES = lzw
+
+CFLAGS = -static
+
+$(XFILES):
+	$(CC) $(CFILES) $(CFLAGS) -o $@
+
+all: $(XFILES)
+
+.PHONY: clean
+clean:
+	rm -f $(XFILES) *.lzw
+
