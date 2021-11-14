@@ -7,7 +7,7 @@ XFILES = $(CFILES:.c=)
 
 CFLAGS = -static
 
-$(XFILES):
+%: %.c
 	$(CC) $(CFILES) $(CFLAGS) -o $@
 
 all: $(XFILES)

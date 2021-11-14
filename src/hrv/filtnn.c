@@ -30,10 +30,66 @@ int ncols;
 static double t, x[MAXWIN+1], y[MAXWIN+1];
 FILE *fp;
 
+int lineget(int i)
+{
+    int j;
+    static int n = 2;
 
-main(argc, argv)
-int argc;
-char * argv[];
+    if (fgets(line, MAXSTR, stdin) == NULL)
+        return(EOF);
+
+    if (ncols == 2) {
+        if ((j = sscanf(line, "%lf %c %s", &y[i], &ann[i], tmp)) != 2) {
+            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
+	    fprintf(stderr, "line = %d\n", n);
+	    exit(2);
+        }
+	t += y[i];
+	x[i] = t;
+    } else if (ncols == 3) {
+        if ((j = sscanf(line, "%lf %lf %c %s", &x[i], &y[i], &ann[i], tmp)) != 3) {
+            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
+	    fprintf(stderr, "line = %d\n", n);
+	    exit(2);
+        }
+    }
+    n++;
+    return(j);
+}
+
+void printline(int i)
+{
+    if (ncols == 3)
+        printf("%.9g ", x[i]);
+    printf("%.8g %c\n", y[i], ann[i]);
+}
+
+void cprintline(int i, char c)
+{
+    if (ncols == 3)
+        printf("%.9g ", x[i]);
+    printf("%.8g %c\n", y[i], c);
+}
+
+void usage()
+{
+    fprintf(stderr, "Usage: %s [options] filt hwin\n", prog);
+    fprintf(stderr, " Reads 2 (y,ann) or 3 (x,y,ann) columns from stdin and\n");
+    fprintf(stderr, " filters NN intervals by marking intervals not within `filt'\n");
+    fprintf(stderr, " range from the average of intervals\n");
+    fprintf(stderr, " within a window `hwin' distance on either side of\n");
+    fprintf(stderr, " current interval.\n");
+    fprintf(stderr, " NEED TO DO A `sort -n' ON FILTERED SERIES");
+    fprintf(stderr, " TO RESTORE TIME ORDER\n\n");
+    fprintf(stderr, " options are :\n");
+    fprintf(stderr, " [-n] : print ratio of nnout to nnin to rrin\n");
+    fprintf(stderr, " [-x min max] : exclude date outside min - max\n");
+    fprintf(stderr, " [-p] : print excluded data at start/end of hwin buffer\n");
+    fprintf(stderr, " [-C ann] : change annotation of excluded points to ann");
+    fprintf(stderr, " (default: X)\n");
+}
+
+int main(int argc, char * argv[])
 {
     char c, lastann;
     int hwin, win, i, j, k, cflag, xflag, pflag, nflag, rrin, nnin, nnout;
@@ -213,75 +269,4 @@ char * argv[];
 		(double)nnout/rrin);
 
     exit(0);
-}
-
-
-
-lineget(i)
-int i;
-{
-    int j;
-    static int n = 2;
-
-    if (fgets(line, MAXSTR, stdin) == NULL)
-        return(EOF);
-
-    if (ncols == 2) {
-        if ((j = sscanf(line, "%lf %c %s", &y[i], &ann[i], tmp)) != 2) {
-            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
-	    fprintf(stderr, "line = %d\n", n);
-	    exit(2);
-        }
-	t += y[i];
-	x[i] = t;
-    }
-    else if (ncols == 3) {
-        if ((j = sscanf(line, "%lf %lf %c %s", &x[i], &y[i], &ann[i], tmp)) != 3) {
-            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
-	    fprintf(stderr, "line = %d\n", n);
-	    exit(2);
-        }
-    }
-
-    n++;
-
-    return(j);
-}
-
-
-printline(i)
-int i;
-{
-    if (ncols == 3)
-        printf("%.9g ", x[i]);
-    printf("%.8g %c\n", y[i], ann[i]);
-}
-
-
-cprintline(i, c)
-int i;
-char c;
-{
-    if (ncols == 3)
-        printf("%.9g ", x[i]);
-    printf("%.8g %c\n", y[i], c);
-}
-
-
-usage()
-{
-    fprintf(stderr, "Usage: %s [options] filt hwin\n", prog);
-    fprintf(stderr, " Reads 2 (y,ann) or 3 (x,y,ann) columns from stdin and\n");
-    fprintf(stderr, " filters NN intervals by marking intervals not within `filt'\n");
-    fprintf(stderr, " range from the average of intervals\n");
-    fprintf(stderr, " within a window `hwin' distance on either side of\n");
-    fprintf(stderr, " current interval.\n");
-    fprintf(stderr, " NEED TO DO A `sort -n' ON FILTERED SERIES");
-    fprintf(stderr, " TO RESTORE TIME ORDER\n\n");
-    fprintf(stderr, " options are :\n");
-    fprintf(stderr, " [-n] : print ratio of nnout to nnin to rrin\n");
-    fprintf(stderr, " [-x min max] : exclude date outside min - max\n");
-    fprintf(stderr, " [-p] : print excluded data at start/end of hwin buffer\n");
-    fprintf(stderr, " [-C ann] : change annotation of excluded points to ann");
-    fprintf(stderr, " (default: X)\n");
 }

@@ -10,11 +10,28 @@ Usage: seconds [[hh]:mm]:ss | -
 #include <stdio.h>
 #include <stdlib.h>
 
-main(argc, argv)
-int argc;
-char *argv[];
+long strtim(char *buf)	/* convert string in [[hh:]mm:]ss to seconds */
 {
-    char *time[12];
+	long x, y, z;
+
+	switch (sscanf(buf, "%ld:%ld:%ld", &x, &y, &z)) {
+		case 1: return (x);
+		case 2: return (60*x + y);
+		case 3: return (3600*x + 60*y + z);
+		default: return (-1L);
+	}
+}
+
+void usage(char *prog)
+{
+    fprintf(stderr, "Usage: %s [[hh]:mm]:ss | -\n", prog);
+    fprintf(stderr, " Convert string in [[hh:]mm:]ss to seconds\n");
+    fprintf(stderr, " `-' to read stdin\n");
+}
+
+int main(int argc, char *argv[])
+{
+    char time[12];
     long strtim();
 
     if (argc < 2) {
@@ -32,27 +49,4 @@ char *argv[];
 	}
     else
         printf("%ld\n", strtim(argv[1]));
-}
-
-
-long strtim(buf)	/* convert string in [[hh:]mm:]ss to seconds */
-char *buf;
-{
-	long x, y, z;
-
-	switch (sscanf(buf, "%ld:%ld:%ld", &x, &y, &z)) {
-		case 1: return (x);
-		case 2: return (60*x + y);
-		case 3: return (3600*x + 60*y + z);
-		default: return (-1L);
-	}
-}
-
-
-usage(prog)
-char *prog;
-{
-    fprintf(stderr, "Usage: %s [[hh]:mm]:ss | -\n", prog);
-    fprintf(stderr, " Convert string in [[hh:]mm:]ss to seconds\n");
-    fprintf(stderr, " `-' to read stdin\n");
 }

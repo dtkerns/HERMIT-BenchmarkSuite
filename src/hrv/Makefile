@@ -13,7 +13,7 @@ BINDIR=/usr/bin
 SCRIPTS = get_hrv plt_rrs
 
 # These binaries are compiled by 'make all'.
-ALL = filt filtnn hours pwr rrlist seconds statnn
+ALL = filt filtnn hours hrv pwr rrlist seconds statnn
 
 all:		$(ALL)
 
@@ -33,23 +33,25 @@ clean:
 	rm -f $(ALL)
 
 filt :		filt.c
-	$(CC) -O -o $@ filt.c
+	$(CC) -O -o $@ $^
 
 filtnn :	filtnn.c
-	$(CC) -O -o $@ filtnn.c
+	$(CC) -O -o $@ $^
 
 hours :		hours.c
-	$(CC) -O -o $@ hours.c
+	$(CC) -O -o $@ $^
+
+hrv :		hrv.c
+	$(CC) -O -o $@ $^ -lm
 
 pwr :		pwr.c
-	$(CC) -O -o $@ pwr.c
+	$(CC) -O -o $@ $^
 
 rrlist :	rrlist.c
-	$(CC) -O -o $@ rrlist.c
+	$(CC) -O -o $@ $^
 
 seconds :	seconds.c
-	$(CC) -O -o $@ seconds.c
+	$(CC) -O -o $@ $^
 
 statnn :	statnn.c
-	$(CC) -O -o $@ statnn.c -lm
-
+	$(CC) -O -o $@ $^ -lm

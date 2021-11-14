@@ -58,7 +58,8 @@ heart rate signal, and a heart rate stationarity index.  For details, see
 
 #define DEFLEN  600  /* 5 minutes at 2 samples/sec */
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
   char buf[80];
   double *t, *hr, activity, meanhr, meanhr0, meanhr1, p, tpower, stationarity;
@@ -147,13 +148,7 @@ int main(int argc, char *argv[]) {
 
       if (!mflag) {
         fprintf(out_file, "%g \t %g \t %g \t %g \t %g \n", t[(len / 4) - 1], meanhr, tpower, stationarity, activity);
-        fprintf(out_file,
-                "%g \t %g \t %g \t %g \t %g \n",
-                t[(3 * (len / 4)) - 1],
-                meanhr,
-                tpower,
-                stationarity,
-                activity);
+        fprintf(out_file, "%g \t %g \t %g \t %g \t %g \n", t[(3 * (len / 4)) - 1], meanhr, tpower, stationarity, activity);
       } else if ((activity < acmin) || (acmin < 0.)) {
         acmin = activity;
         hrmin = meanhr;

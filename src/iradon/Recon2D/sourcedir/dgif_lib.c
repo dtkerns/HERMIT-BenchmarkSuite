@@ -518,7 +518,8 @@ static int DGifSetupDecompress(GifFileType *GifFile) {
   unsigned int *Prefix;
   GifFilePrivateType *Private = (GifFilePrivateType *) GifFile->Private;
 
-  fread(&CodeSize, 1, 1, Private->File);    /* Read Code size from file. */
+  int rc = fread(&CodeSize, 1, 1, Private->File);    /* Read Code size from file. */
+  (void) rc;
   BitsPerPixel = CodeSize;
 
   Private->Buf[0] = 0;                  /* Input Buffer empty. */

@@ -3429,8 +3429,8 @@ FINT setsampfreq(WFDB_Frequency freq) {
     return (-1);
 }
 
-static char date_string[12] = "";
-static char time_string[30];
+static char date_string[30] = "";
+static char time_string[64];
 
 #ifndef __STDC__
 #ifndef _WINDOWS
@@ -3669,7 +3669,7 @@ FSTRING datstr(WFDB_Date date) {
     y = jy - 4715;
     if (m > 2) y--;
     if (y <= 0) y--;
-    (void) sprintf(date_string, " %02d/%02d/%d", d, m, y);
+    (void) snprintf(date_string, sizeof(date_string), " %02d/%02d/%4d", d, m, y);
     return (date_string);
 }
 

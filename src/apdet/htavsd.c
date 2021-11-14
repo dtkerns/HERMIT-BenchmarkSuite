@@ -45,12 +45,35 @@ ampthres : min amp
 #include <math.h>
 #define MAXFREQ 0.06
 
-int main(int argc, char *argv[]) {
+int strtim(char *buf)        /* convert string in [[HH:]MM:]SS format to seconds */
+{
+  int x, y, z;
+
+  switch (sscanf(buf, "%d:%d:%d", &x, &y, &z)) {
+    case 1: return (x);
+    case 2: return (60 * x + y);
+    case 3: return (3600 * x + 60 * y + z);
+    default: return (-1);
+  }
+}
+
+void usage(char *prog)
+{
+  fprintf(stderr, "Usage : %s incr win ampthres\n\n", prog);
+  fprintf(stderr, " Reads stdin of time in secs, amp and freq\n");
+  fprintf(stderr, " outputs time, av, sd, and");
+  fprintf(stderr, " %c time within threshold limits for both amp and freq\n\n", '%');
+  fprintf(stderr, "incr] : output for every 'incr' time steps\n");
+  fprintf(stderr, "win : window length\n");
+  fprintf(stderr, "ampthres : minumum amplitude threshold\n");
+}
+
+int main(int argc, char *argv[])
+{
   int i, j, k, win, start, incr, ydet, zdet;
   double ampthres;
   double sumy, sumz, sumyy, sumzz, avy, avz, sdy, sdz;
   double *x, *y, *z;
-  double atof();
 
   if (argc < 4) {
     usage(argv[0]);
@@ -58,17 +81,17 @@ int main(int argc, char *argv[]) {
   }
 
   if ((incr = strtim(argv[1])) <= 0) {
-    fprintf(stderr, "%0 : incr must be greater than 0\n", argv[0]);
+    fprintf(stderr, "%s : incr must be greater than 0\n", argv[0]);
     exit(1);
   }
 
   if ((win = strtim(argv[2])) <= 0) {
-    fprintf(stderr, "%0 : win must be greater than 0\n", argv[0]);
+    fprintf(stderr, "%s : win must be greater than 0\n", argv[0]);
     exit(1);
   }
 
   if ((ampthres = atof(argv[3])) <= 0) {
-    fprintf(stderr, "%0 : ampthres must be greater than 0\n", argv[0]);
+    fprintf(stderr, "%s : ampthres must be greater than 0\n", argv[0]);
     exit(1);
   }
 
@@ -178,17 +201,13 @@ int main(int argc, char *argv[]) {
     if (++i >= win)
       i = 0;
 
-    for (
-        j = 1 ;
-        j < incr &&
-            j < win ;
-        i++, j++) {
-
+    for (j = 1 ; j < incr && j < win; i++, j++) {
       if (i >= win)
         i = 0;
 
-      if (scanf("%lf %lf %lf", &x[i], &y[i], &z[i]) != 3)
+      if (scanf("%lf %lf %lf", &x[i], &y[i], &z[i]) != 3) {
         exit(0);
+      }
 
       sumy += y[i];
       sumz += z[i];
@@ -210,18 +229,13 @@ int main(int argc, char *argv[]) {
     sdz = sqrt((sumzz - sumz * sumz / win) / (win - 1));
 
     printf("%02d:%02d:%02d ", start / 3600, (start % 3600) / 60, start % 60);
-    printf("%f %f %f %f %f %f\n",
-           avy, sdy, ((double) ydet) / win,
-           avz, sdz, ((double) zdet) / win);
+    printf("%f %f %f %f %f %f\n", avy, sdy, ((double) ydet) / win, avz, sdz, ((double) zdet) / win);
 
     if (incr == win) {
       sumy = sumz = sumyy = sumzz = 0.0;
       ydet = zdet = 0;
     } else {
-      for (
-          j = 0, k = j + i ;
-          j < incr ;
-          j++, k++) {
+      for (j = 0, k = j + i; j < incr; j++, k++) {
         if (k >= win)
           k = 0;
         sumy -= y[k];
@@ -234,41 +248,6 @@ int main(int argc, char *argv[]) {
           zdet--;
       }
     }
-
-    start +=
-        incr;
-
+    start += incr;
   }
-}
-
-int strtim(buf)        /* convert string in [[HH:]MM:]SS format to seconds */
-    char *buf;
-{
-  int x, y, z;
-
-  switch (sscanf(buf, "%d:%d:%d", &x, &y, &z)) {
-    case 1: return (x);
-    case 2: return (60 * x + y);
-    case 3: return (3600 * x + 60 * y + z);
-    default: return (-1);
-  }
-}
-
-usage(prog)
-char *prog;
-{
-fprintf(stderr,
-"Usage : %s incr win ampthres\n\n", prog);
-fprintf(stderr,
-" Reads stdin of time in secs, amp and freq\n");
-fprintf(stderr,
-" outputs time, av, sd, and");
-fprintf(stderr,
-" % time within threshold limits for both amp and freq\n\n");
-fprintf(stderr,
-"incr] : output for every 'incr' time steps\n");
-fprintf(stderr,
-"win : window length\n");
-fprintf(stderr,
-"ampthres : minumum amplitude threshold\n");
 }

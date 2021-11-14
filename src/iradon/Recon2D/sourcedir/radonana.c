@@ -744,7 +744,8 @@ The main-function will control the program.
 25/10-94 Peter Toft\\
 April 12 96 Peter Toft
 **********************************************************/
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   idum = IntVector(1);
   idum[0] = -1;
   sqrt2 = sqrt(2.0);
@@ -774,18 +775,5 @@ void main(int argc, char *argv[]) {
   }
   Print(_DNormal, "Writing file\n");
   end();
+  return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -40,8 +40,46 @@ minlen : min length of run in hh:mm:ss
 #include <stdlib.h>
 #include <stdio.h>
 
-int main(int argc, char *argv[]) {
-  char hour[9], *timstr();
+long strtim(char *buf) /* convert string in [[HH:]MM:]SS format to seconds */
+{
+  long x, y, z;
+
+  switch (sscanf(buf, "%ld:%ld:%ld", &x, &y, &z)) {
+    case 1: return (x);
+    case 2: return (60 * x + y);
+    case 3: return (3600 * x + 60 * y + z);
+    default: return (-1L);
+  }
+}
+
+char *timstr(long time)
+{
+  /* convert seconds to [HH:]MM:SS format */
+  int hours, minutes, seconds;
+  static char buf[9];
+
+  hours = time / 3600L;
+  time -= (long) hours * 3600;
+  minutes = time / 60;
+  seconds = time - minutes * 60;
+  sprintf(buf, "%02d:%02d:%02d", hours, minutes, seconds);
+  return (buf);
+}
+
+void usage(char *prog)
+{
+  fprintf(stderr, "Usage : %s incr win minlen\n\n", prog);
+  fprintf(stderr, " Reads one column of data (hour)\n");
+  fprintf(stderr, " and outputs start and end times of run detection\n");
+  fprintf(stderr, " windows and sum total detection time.\n\n");
+  fprintf(stderr, " incr : output increment in hh:mm:ss\n");
+  fprintf(stderr, " win : window length in hh:mm:ss\n");
+  fprintf(stderr, " minlen : min length of run in hh:mm:ss\n");
+}
+
+int main(int argc, char *argv[])
+{
+  char hour[9];
   int i, runflag, runflag0;
   long incr, win, minlen;
   long time, lasttime, runstart, runstart0, runend0, outtime, sum, strtim();
@@ -136,38 +174,4 @@ int main(int argc, char *argv[]) {
   printf("%s\n", timstr(sum));
 
   return 0;
-}
-
-long strtim(char *buf) {        /* convert string in [[HH:]MM:]SS format to seconds */
-  long x, y, z;
-
-  switch (sscanf(buf, "%ld:%ld:%ld", &x, &y, &z)) {
-    case 1: return (x);
-    case 2: return (60 * x + y);
-    case 3: return (3600 * x + 60 * y + z);
-    default: return (-1L);
-  }
-}
-
-char *timstr(long time) {
-  /* convert seconds to [HH:]MM:SS format */
-  int hours, minutes, seconds;
-  static char buf[9];
-
-  hours = time / 3600L;
-  time -= (long) hours * 3600;
-  minutes = time / 60;
-  seconds = time - minutes * 60;
-  sprintf(buf, "%02d:%02d:%02d", hours, minutes, seconds);
-  return (buf);
-}
-
-void usage(char *prog) {
-  fprintf(stderr, "Usage : %s incr win minlen\n\n", prog);
-  fprintf(stderr, " Reads one column of data (hour)\n");
-  fprintf(stderr, " and outputs start and end times of run detection\n");
-  fprintf(stderr, " windows and sum total detection time.\n\n");
-  fprintf(stderr, " incr : output increment in hh:mm:ss\n");
-  fprintf(stderr, " win : window length in hh:mm:ss\n");
-  fprintf(stderr, " minlen : min length of run in hh:mm:ss\n");
 }

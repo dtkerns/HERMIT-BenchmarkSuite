@@ -39,7 +39,19 @@ options are :
 
 #define MAXWIN 1024
 
-int main(int argc, char *argv[]) {
+void usage(char *prog)
+{
+  fprintf(stderr, "Usage : %s filt hwin [options]\n\n", prog);
+  fprintf(stderr, " Reads 2 columns from stdin and filters outliers by\n");
+  fprintf(stderr, " deleting those intervals outside of `filt' range of\n");
+  fprintf(stderr, " the average within a window hwin' distance on either\n");
+  fprintf(stderr, " side of the current interval.\n\n");
+  fprintf(stderr, " options are :\n");
+  fprintf(stderr, " [-x min max] : exclude date outside min - max\n");
+}
+
+int main(int argc, char *argv[])
+{
   int hwin, win, i, j, k;
   int xflag;
   double filt, filtmin, filtmax, min, max, mtmp, sum, av;
@@ -75,7 +87,7 @@ int main(int argc, char *argv[]) {
     switch (argv[i][1]) {
       case 'x':
         if (i + 3 > argc) {
-          usage();
+          usage(argv[0]);
           exit(1);
         }
         min = atof(argv[++i]);
@@ -158,14 +170,4 @@ int main(int argc, char *argv[]) {
   }
 
   return 0;
-}
-
-void usage(char *prog) {
-  fprintf(stderr, "Usage : %s filt hwin [options]\n\n", prog);
-  fprintf(stderr, " Reads 2 columns from stdin and filters outliers by\n");
-  fprintf(stderr, " deleting those intervals outside of `filt' range of\n");
-  fprintf(stderr, " the average within a window hwin' distance on either\n");
-  fprintf(stderr, " side of the current interval.\n\n");
-  fprintf(stderr, " options are :\n");
-  fprintf(stderr, " [-x min max] : exclude date outside min - max\n");
 }

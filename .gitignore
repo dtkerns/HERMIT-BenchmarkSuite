@@ -133,3 +133,28 @@ fabric.properties
 
 # CMake Lists
 CMakeLists.txt
+
+# ctags index
+tags
+
+# specific targets
+src/apdet/av
+src/apdet/detruns
+src/apdet/filt
+src/apdet/ht
+src/apdet/htavsd
+src/apdet/htmedfilt
+src/apdet/ldetrend
+src/apdet/linsamp
+src/apdet/mm
+src/apdet/rrlist
+src/apdet/smooth
+src/hrv/filt
+src/hrv/filtnn
+src/hrv/hours
+src/hrv/pwr
+src/hrv/rrlist
+src/hrv/seconds
+src/hrv/statnn
+src/kmeans/kmeans
+src/sqrs/sqrs

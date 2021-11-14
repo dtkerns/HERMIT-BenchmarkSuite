@@ -48,12 +48,12 @@ void ReadItArgs(char *IniBuffer) {
   Image *tempImage, *refImage = NULL;
 
   if (!(GetArg(IniBuffer, "OutFileName", Temp)))
-    Error("`OutFileName' entry missing in INI file");
+    fprintf(stderr, "`OutFileName' entry missing in INI file");
   sscanf(Temp, "%s", itINI.OutFileName);
   if (!(strptr = strrchr(itINI.OutFileName, '.')))
-    Error("Error in IniFile: `%s'", itINI.OutFileName);
+    fprintf(stderr, "Error in IniFile: `%s'", itINI.OutFileName);
   itINI.OutFileName[strptr - itINI.OutFileName] = '\0';
-  Print(_DNormal, "`OutFileName' entry is set to `%s'\n", itINI.OutFileName);
+
 
   if (!(GetArg(IniBuffer, "DebugLevel", Temp))) DebugNiveau = _DNormal;
   else if (strstr(Temp, "Normal")) DebugNiveau = _DNormal;
@@ -65,6 +65,8 @@ void ReadItArgs(char *IniBuffer) {
 
   strcpy(LogFileName, itINI.OutFileName);
   OpenLog(LogFileName);
+
+  Print(_DNormal, "`OutFileName' entry is set to `%s'\n", itINI.OutFileName);
 
   if (!(GetArg(IniBuffer, "InFileName", Temp)))
     Error("`InFileName' entry missing in INI file");

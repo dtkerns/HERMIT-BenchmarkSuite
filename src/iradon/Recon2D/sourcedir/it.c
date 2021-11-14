@@ -207,7 +207,8 @@ Starts the main program with the parameteres specified in {\tt test.ini}.
 March 96, JJJ and PT\\
 April 2, 96 PT (Moved last call to clock - error in SGI CC)
 ***************************************************************/
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   int RealTid1, RealTid2, n;
   float Tid, tempsuma, tempsumb, mean;
   char Value[100];
@@ -313,8 +314,5 @@ void main(int argc, char *argv[]) {
   Print(_DNoLog, "\n");
 
   CloseLog();
+  return 0;
 }
-
-
-
-

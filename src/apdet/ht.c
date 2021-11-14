@@ -33,8 +33,46 @@ Perform Hilbert transform and calculate instantaneous magnitude and frequency.
 #define LMAX 200000
 #define LFILT 128    /* impulse response filter length; must be even!!! */
 
-int main(int argc, char *argv[]) {
+void convol(double *source, double *target, double *filt, int npt, int lfilt)
+{
+  int i, l;
+  double yt;
 
+  for (l = 1 ; l <= npt - lfilt + 1 ; l++) {
+    yt = 0.0;
+
+    for (i = 1 ; i <= lfilt ; i++) {
+      yt = yt + source[l + i - 1] * filt[lfilt + 1 - i];
+    }
+
+    target[l] = yt;
+  }
+
+/* shifting lfilt/1+1/2 points */
+  for (i = 1 ; i <= npt - lfilt ; i++) {
+    target[i] = 0.5 * (target[i] + target[i + 1]);
+  }
+
+  for (i = npt - lfilt ; i >= 1 ; i--) {
+    target[i + lfilt / 2] = target[i];
+  }
+
+/* writing zeros */
+  for (i = 1 ; i <= lfilt / 2 ; i++) {
+    target[i] = 0.0;
+    target[npt + 1 - i] = 0.0;
+  }
+}
+
+void usage(char *prog)
+{
+  fprintf(stderr, "Usage : %s\n\n", prog);
+  fprintf(stderr, " Reads 2 columns of input (time and x) and outputs\n");
+  fprintf(stderr, " time and Hilbert transform ampltudes and frequencies.\n");
+}
+
+int main(int argc, char *argv[])
+{
   int i, npt, lfilt;
   static double time[LMAX + 1], x[LMAX + 1];
   static double xh[LMAX + 1], ampl[LMAX + 1], phase[LMAX + 1], omega[LMAX + 1];
@@ -86,40 +124,4 @@ int main(int argc, char *argv[]) {
   }
 
   return 0;
-}
-
-void convol(double *source, double *target, double *filt, int npt, int lfilt) {
-  int i, l;
-  double yt;
-
-  for (l = 1 ; l <= npt - lfilt + 1 ; l++) {
-    yt = 0.0;
-
-    for (i = 1 ; i <= lfilt ; i++) {
-      yt = yt + source[l + i - 1] * filt[lfilt + 1 - i];
-    }
-
-    target[l] = yt;
-  }
-
-/* shifting lfilt/1+1/2 points */
-  for (i = 1 ; i <= npt - lfilt ; i++) {
-    target[i] = 0.5 * (target[i] + target[i + 1]);
-  }
-
-  for (i = npt - lfilt ; i >= 1 ; i--) {
-    target[i + lfilt / 2] = target[i];
-  }
-
-/* writing zeros */
-  for (i = 1 ; i <= lfilt / 2 ; i++) {
-    target[i] = 0.0;
-    target[npt + 1 - i] = 0.0;
-  }
-}
-
-void usage(char *prog) {
-  fprintf(stderr, "Usage : %s\n\n", prog);
-  fprintf(stderr, " Reads 2 columns of input (time and x) and outputs\n");
-  fprintf(stderr, " time and Hilbert transform ampltudes and frequencies.\n");
 }

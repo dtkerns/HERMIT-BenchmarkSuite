@@ -26,9 +26,37 @@ sdnnindx, rmssd and pnn on stderr
 #define ABS(A) ((A) < 0 ? -(A) : (A))
 #define ROFFERR 1e-10
 
-main(argc, argv)
-int argc;
-char *argv[];
+/* convert string in [[HH:]MM:]SS format to seconds */
+int strtim(char *buf)
+{
+        int x, y, z;
+
+        switch (sscanf(buf, "%d:%d:%d", &x, &y, &z)) {
+                case 1: return (x);
+                case 2: return (60*x + y);
+                case 3: return (3600*x + 60*y + z);
+                default: return (-1);
+        }
+}
+
+void usage(char *prog)
+{
+        fprintf(stderr, "Usage: %s [options]\n", prog);
+        fprintf(stderr, "Reads stdin: time(sec), interval(sec), annotation\n");
+        fprintf(stderr, "and calculates nn interval stats\n");
+        fprintf(stderr, "Outputs nn/rr, avnn, sdnn, sdann,\n");
+        fprintf(stderr, "sdnnindx, rmssd and pnn on stderr\n");
+	fprintf(stderr, "  options :\n");
+        fprintf(stderr, "  [-l len] : window length (default 5:00)\n");
+        fprintf(stderr, "  [-m] : RR intervals in msec\n");
+        fprintf(stderr, "  [-p nndif ...] : nn diffenence for pnn\n");
+        fprintf(stderr, "  [-s] : short term stats\n");
+        fprintf(stderr, "         nn/rr, avnn, sdnn, rmssd and pnn on stderr\n");
+	fprintf(stderr, "  [-L] : print ratio avnn sdnn sdann sdnnindx");
+	fprintf(stderr, " rmssd pnns on one line\n");
+}
+
+int main(int argc, char *argv[])
 {
 
     char ann, lastann[2];
@@ -130,7 +158,7 @@ char *argv[];
 
 		/* modified 6-15-01 */
 		/* equal may not be equal do to round of error !! */
-	        /* if (ABS(rr-lastrr) > nndif) { */
+	        /* if (ABS(rr-lastrr) > nndif) */
 
 		for (j=0; j<np; j++) {
 		    if (ABS(rr-lastrr) - nndif[j] > ROFFERR) { 
@@ -224,39 +252,4 @@ char *argv[];
 		                 : (double)nnx[j]/totnnn);
         }
     }
-}
-
-
-/* convert string in [[HH:]MM:]SS format to seconds */
-
-strtim(buf)
-char *buf;
-{
-        int x, y, z;
-
-        switch (sscanf(buf, "%d:%d:%d", &x, &y, &z)) {
-                case 1: return (x);
-                case 2: return (60*x + y);
-                case 3: return (3600*x + 60*y + z);
-                default: return (-1);
-        }
-}
-
-
-usage(prog)
-char *prog;
-{
-        fprintf(stderr, "Usage: %s [options]\n", prog);
-        fprintf(stderr, "Reads stdin: time(sec), interval(sec), annotation\n");
-        fprintf(stderr, "and calculates nn interval stats\n");
-        fprintf(stderr, "Outputs nn/rr, avnn, sdnn, sdann,\n");
-        fprintf(stderr, "sdnnindx, rmssd and pnn on stderr\n");
-	fprintf(stderr, "  options :\n");
-        fprintf(stderr, "  [-l len] : window length (default 5:00)\n");
-        fprintf(stderr, "  [-m] : RR intervals in msec\n");
-        fprintf(stderr, "  [-p nndif ...] : nn diffenence for pnn\n");
-        fprintf(stderr, "  [-s] : short term stats\n");
-        fprintf(stderr, "         nn/rr, avnn, sdnn, rmssd and pnn on stderr\n");
-	fprintf(stderr, "  [-L] : print ratio avnn sdnn sdann sdnnindx");
-	fprintf(stderr, " rmssd pnns on one line\n");
 }

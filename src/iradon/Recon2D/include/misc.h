@@ -38,7 +38,6 @@ typedef struct {
 #define sq(a) ((a)*(a))
 
 extern int DebugNiveau;
-extern FILE *LogFile;
 extern char LogFileName[100];
 extern INI IniFile;
 extern int DebugNiveau;

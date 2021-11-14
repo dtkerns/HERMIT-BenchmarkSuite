@@ -36,105 +36,74 @@ Usage : htmedfilt win
 
 static double time[MAXWIN], x[MAXWIN], y[MAXWIN], sx[MAXWIN], sy[MAXWIN];
 
-main(argc, argv
-)
-int argc;
-char *argv[];
+int dblcmp(const void *y1, const void *y2)
 {
-int i, j, k, win, hwin;
-int dblcmp();
-
-if (argc != 2) {
-usage(argv[0]);
-exit(1);
-}
-
-if ((
-win = atoi(argv[1])
-) < 3) {
-usage(argv[0]);
-exit(1);
-}
-if (win > MAXWIN) {
-fprintf(stderr,
-"%s : maximum window size is MAXWIN\n", argv[0]);
-exit(2);
-}
-
-for (
-i = 0;
-i<win && scanf("%lf %lf %lf", &time[i], &x[i], &y[i]) == 3; i++);
-
-if (i < win) {
-fprintf(stderr,
-"%s : not enough points in input\n", argv[0]);
-exit(2);
-}
-if (++i >= win)
-i = 0;
-j = hwin = win / 2 - 1;
-
-for (
-k = 0;
-k<win;
-k++) {
-sx[k] = x[k];
-sy[k] = y[k];
-}
-
-qsort(sx, win,
-sizeof(double), dblcmp);
-qsort(sy, win,
-sizeof(double), dblcmp);
-printf("%g %g %g\n", time[j], sx[hwin], sy[hwin]);
-
-while (scanf("%lf %lf %lf", &time[i], &x[i], &y[i]) == 3) {
-
-if (++i >= win)
-i = 0;
-if (++j >= win)
-j = 0;
-
-for (
-k = 0;
-k<win;
-k++) {
-sx[k] = x[k];
-sy[k] = y[k];
-}
-
-qsort(sx, win,
-sizeof(double), dblcmp);
-qsort(sy, win,
-sizeof(double), dblcmp);
-printf("%g %g %g\n", time[j], sx[hwin], sy[hwin]);
-
-}
-
-}
-
-
-int dblcmp(y1, y2)
-    double *y1, *y2;
-{
-
-  if (*y1 < *y2)
+  if ((double * const *) y1 < (double * const *) y2)
     return (-1);
-  else if (*y1 > *y2)
+  else if ((double * const *) y1 > (double * const *) y2)
     return (1);
   else
     return (0);
-
 }
 
-usage(prog)
-char *prog;
+void usage(char *prog)
 {
-fprintf(stderr,
-"Usage : %s  win\n\n", prog);
-fprintf(stderr,
-" Separately median filter Hilbert amplitudes and\n");
-fprintf(stderr,
-" frequencies with a sliding window hwin points wide.\n");
+  fprintf(stderr, "Usage : %s  win\n\n", prog);
+  fprintf(stderr, " Separately median filter Hilbert amplitudes and\n");
+  fprintf(stderr, " frequencies with a sliding window hwin points wide.\n");
+}
 
+int main(int argc, char *argv[])
+{
+  int i, j, k, win, hwin;
+
+  if (argc != 2) {
+    usage(argv[0]);
+    exit(1);
+  }
+
+  if ((win = atoi(argv[1])) < 3) {
+    usage(argv[0]);
+    exit(1);
+  }
+  if (win > MAXWIN) {
+    fprintf(stderr, "%s : maximum window size is MAXWIN\n", argv[0]);
+    exit(2);
+  }
+
+  for (i = 0; i<win && scanf("%lf %lf %lf", &time[i], &x[i], &y[i]) == 3; i++);
+
+  if (i < win) {
+    fprintf(stderr, "%s : not enough points in input\n", argv[0]);
+    exit(2);
+  }
+  if (++i >= win)
+    i = 0;
+  j = hwin = win / 2 - 1;
+
+  for (k = 0; k<win; k++) {
+    sx[k] = x[k];
+    sy[k] = y[k];
+  }
+
+  qsort(sx, win, sizeof(double), dblcmp);
+  qsort(sy, win, sizeof(double), dblcmp);
+  printf("%g %g %g\n", time[j], sx[hwin], sy[hwin]);
+
+  while (scanf("%lf %lf %lf", &time[i], &x[i], &y[i]) == 3) {
+
+    if (++i >= win)
+      i = 0;
+    if (++j >= win)
+      j = 0;
+
+    for (k = 0; k<win; k++) {
+      sx[k] = x[k];
+      sy[k] = y[k];
+    }
+
+    qsort(sx, win, sizeof(double), dblcmp);
+    qsort(sy, win, sizeof(double), dblcmp);
+    printf("%g %g %g\n", time[j], sx[hwin], sy[hwin]);
+  }
 }

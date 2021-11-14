@@ -15,9 +15,14 @@ other functions.
 #include <stdlib.h>
 #include <stdarg.h>
 #include <malloc.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "misc.h"
 #include "imgtools.h"
 #include "calc.h"
+
+static FILE *LogFile;
 
 /*****************************************************************************
 [NAME]
@@ -49,6 +54,7 @@ int GetArg(char *IniBuffer, char *Entry, char *Value) {
   char *chrprt, *EntryPrt, *EntryEndPrt, SEntry[101], EEntry[101];
   int ArgError = _ArgError;
 
+fprintf(stderr, "enter: %s: buf |%20.20s| Entry = |%s| (%ld)\n", __func__, IniBuffer, Entry, strlen(Entry));
   SEntry[0] = '\n';
   strcpy(&SEntry[1], Entry);
   strcpy(EEntry, SEntry);
@@ -62,7 +68,8 @@ int GetArg(char *IniBuffer, char *Entry, char *Value) {
       Error("Error in IniFile: '%s'", Entry);
     if (!(EntryEndPrt = strchr(chrprt, (char) 0x0A)))
       Error("Error in INI file: '%s'", Entry);
-    strncpy(Value, (EntryPrt += 1), (EntryEndPrt - EntryPrt));
+    EntryPrt++;
+    strncpy(Value, EntryPrt, (EntryEndPrt - EntryPrt));
     Value[EntryEndPrt - EntryPrt] = '\0';
     ArgError = _NoError;
   }
@@ -94,18 +101,20 @@ char *ReadIni(char *FileName) {
   char Temp[100], *chrprt, *IniBuf;
   FILE *InFile;
   int FileSize;
+  struct stat sb;
 
   strcpy(Temp, FileName);
   if (!(chrprt = strrchr(Temp, '.')))
     strcat(Temp, ".ini");
 
+  if (stat(Temp, &sb) < 0)
+    Error("Error failed to stat INI file");
+
   if (!(InFile = fopen(Temp, "rb")))
     Error("Error opening INI file");
 
-  fseek(InFile, 0L, SEEK_END);
-  FileSize = ftell(InFile);
+  FileSize = sb.st_size;
   printf("Total size of file = %d bytes \n", FileSize);
-  rewind(InFile);
 
   if (!(IniBuf = (char *) malloc(sizeof(char) * FileSize + 3)))
     Error("Error allocating memory (ReadIni)");
@@ -147,7 +156,7 @@ void ReadIradonArgs(char *IniBuffer) {
   Image *OrgImage;
 
   if (!(GetArg(IniBuffer, "OutFile", IniFile.OutFile)))
-    Error("'OutFile' entry missing in INI file");
+    fprintf(stderr, "'OutFile' entry missing in INI file");
   chrprt = strrchr(IniFile.OutFile, '.');
   if (chrprt) {
     strcpy(Temp, chrprt + 1);
@@ -340,7 +349,6 @@ void OpenLog(char *FileName) {
     if (!(LogFile = fopen(LogFileName, "w")))
       Error("Error opening LOG file");
     fprintf(LogFile, "--- START OF IRADON LOG; %s ---\n", str);
-    fclose(LogFile);
   }
 }
 
@@ -369,10 +377,7 @@ void CloseLog() {
   char str[100];
 
   if (!(DebugNiveau & (_DHardCore | _DNoLog))) {
-    fclose(LogFile);
     GetDateTime(str, _Time);
-    if (!(LogFile = fopen(LogFileName, "a+")))
-      Error("Error opening LOG file");
     fprintf(LogFile, "---- Normal termination; %s ---\n", str);
     fclose(LogFile);
   }
@@ -416,14 +421,16 @@ void Print(int Niveau, char *fmt, ...) {
   char str[20];
   va_list ap;
 
+  if (LogFile == NULL) {
+    fprintf(stderr, "Error: call to %s before LogFile open\n", __func__);
+    return;
+  }
+
   va_start(ap, fmt);
   vsprintf(LogString, fmt, ap);
   GetDateTime(str, _Time);
   if ((Niveau != _DNoLog) && (!(DebugNiveau & (_DHardCore | _DNoLog)))) {
-    if (!(LogFile = fopen(LogFileName, "a+")))
-      Error("Error opening LOG file");
     fprintf(LogFile, "%s: %s", str, LogString);
-    fclose(LogFile);
   }
   if (((DebugNiveau & (_DDebug | _DNoLog)) && (Niveau & (_DDebug | _DNoLog | _DNormal)))
       || ((DebugNiveau & (_DNormal)) && (Niveau & (_DNormal | _DNoLog)))) {
@@ -467,14 +474,12 @@ void Error(char *fmt, ...) {
 
   if (!(DebugNiveau & (_DHardCore | _DNoLog))) {
     GetDateTime(str, _Time);
-    if (!(LogFile = fopen(LogFileName, "a+")))
-      printf("Error opening LOG file");
     fprintf(LogFile, "%s: %s\n", str, LogString);
     fprintf(LogFile, "---- IRADON terminated with an error; %s ---\n", str);
     fclose(LogFile);
   }
 
-  printf(LogString);
+  puts(LogString);
   printf("\n");
   exit(1);
 }

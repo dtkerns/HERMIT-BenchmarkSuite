@@ -29,9 +29,31 @@ options are :
 #include "../../include/wfdb/annot.c"
 #include "../../include/wfdb/wfdbio.c"
 
-main(argc, argv)	
-int argc;
-char *argv[];
+
+void usage(char *prog)
+{
+    fprintf(stderr, "Usage: %s annotator tape [options]\n", prog);
+    fprintf(stderr, "options are :\n");
+    fprintf(stderr, "  [-f start] : begin at time 'start'\n");
+    fprintf(stderr, "  [-t end] : end at time 'end'\n");
+    fprintf(stderr, "  [-l length] : output for duration 'length'\n");
+    fprintf(stderr, "  [-n count] : output 'count' intervals\n");
+    fprintf(stderr, "  [-c] : output time in hh:mm:ss in first column\n");
+    fprintf(stderr, "  [-h] : output time in hours in first column\n");
+    fprintf(stderr, "  [-m] : output time in minutes in first column\n");
+    fprintf(stderr, "  [-s] : output time in seconds in first column\n");
+    fprintf(stderr, "  [-e] : output elapsed time from start\n");
+    fprintf(stderr, "  [-a annotation] : ");
+    fprintf(stderr, "  list only intervals between consecutive annotations\n");
+    fprintf(stderr, "  [-r] : ");
+    fprintf(stderr, "output ratio of specified annotation intervals ");
+    fprintf(stderr, "to RR intervals\n");
+    fprintf(stderr, "  [-H] : high precision intervals ");
+    fprintf(stderr, "(8 significant digits vs 3)\n");
+    fprintf(stderr, "  [-M] : output intervals in msec\n");
+}
+
+int main(int argc, char *argv[])
 {
     int i, nrr, nann, cnt, annotation;
     int cflag, hflag, mflag, sflag, eflag, aflag, rflag, hipre, msec;
@@ -195,29 +217,4 @@ char *argv[];
     }
 
     exit(0);
-}
-
-
-usage(prog)
-char *prog;
-{
-    fprintf(stderr, "Usage: %s annotator tape [options]\n", prog);
-    fprintf(stderr, "options are :\n");
-    fprintf(stderr, "  [-f start] : begin at time 'start'\n");
-    fprintf(stderr, "  [-t end] : end at time 'end'\n");
-    fprintf(stderr, "  [-l length] : output for duration 'length'\n");
-    fprintf(stderr, "  [-n count] : output 'count' intervals\n");
-    fprintf(stderr, "  [-c] : output time in hh:mm:ss in first column\n");
-    fprintf(stderr, "  [-h] : output time in hours in first column\n");
-    fprintf(stderr, "  [-m] : output time in minutes in first column\n");
-    fprintf(stderr, "  [-s] : output time in seconds in first column\n");
-    fprintf(stderr, "  [-e] : output elapsed time from start\n");
-    fprintf(stderr, "  [-a annotation] : ");
-    fprintf(stderr, "  list only intervals between consecutive annotations\n");
-    fprintf(stderr, "  [-r] : ");
-    fprintf(stderr, "output ratio of specified annotation intervals ");
-    fprintf(stderr, "to RR intervals\n");
-    fprintf(stderr, "  [-H] : high precision intervals ");
-    fprintf(stderr, "(8 significant digits vs 3)\n");
-    fprintf(stderr, "  [-M] : output intervals in msec\n");
 }

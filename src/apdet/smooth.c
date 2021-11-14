@@ -34,75 +34,56 @@ Usage : smooth window
 
 #define MAXWIN    7200
 
-main(argc, argv
-)
-int argc;
-char *argv[];
+void usage(char *prog)
 {
-int i, win;
-static double x[MAXWIN], y[MAXWIN];
-double sumx, sumy;
-
-if (argc < 2) {
-usage(argv[0]);
-exit(1);
+  fprintf(stderr, "Usage : %s window\n\n", prog);
+  fprintf(stderr, " Smooth two column stdin with  sliding window average.\n");
 }
 
-if ((
-win = atoi(argv[1])
-) <= 1) {
-fprintf(stderr,
-"%s : maximum window size must be greater than 1\n", argv[0]);
-exit(2);
-}
-else if (win > MAXWIN) {
-fprintf(stderr,
-"%s : maximum window size is %d\n", argv[0], MAXWIN);
-exit(2);
-}
-
-sumx = sumy = 0.0;
-
-for (
-i = 0;
-i<win && scanf("%lf %lf", &x[i], &y[i]) == 2; i++) {
-sumx += x[i];
-sumy += y[i];
-}
-
-if (i < win) {
-fprintf(stderr,
-"%s : not enough points in input\n", argv[0]);
-exit(2);
-}
-
-printf("%g %g\n", sumx/win, sumy/win);
-
-i = 0;
-sumx -= x[i];
-sumy -= y[i];
-
-while (scanf("%lf %lf", &x[i], &y[i]) == 2) {
-
-sumx += x[i];
-sumy += y[i];
-
-printf("%g %g\n", sumx/win, sumy/win);
-
-if (++i >= win)
-i = 0;
-sumx -= x[i];
-sumy -= y[i];
-
-}
-
-}
-
-usage(prog)
-char *prog;
+int main(int argc, char *argv[])
 {
-fprintf(stderr,
-"Usage : %s window\n\n", prog);
-fprintf(stderr,
-" Smooth two column stdin with  sliding window average.\n");
+  int i, win;
+  static double x[MAXWIN], y[MAXWIN];
+  double sumx, sumy;
+
+  if (argc < 2) {
+    usage(argv[0]);
+    exit(1);
+  }
+
+  if ((win = atoi(argv[1])) <= 1) {
+    fprintf(stderr, "%s : maximum window size must be greater than 1\n", argv[0]);
+    exit(2);
+  } else if (win > MAXWIN) {
+    fprintf(stderr, "%s : maximum window size is %d\n", argv[0], MAXWIN);
+    exit(2);
+  }
+
+  sumx = sumy = 0.0;
+
+  for (i = 0; i<win && scanf("%lf %lf", &x[i], &y[i]) == 2; i++) {
+    sumx += x[i];
+    sumy += y[i];
+  }
+
+  if (i < win) {
+    fprintf(stderr, "%s : not enough points in input\n", argv[0]);
+    exit(2);
+  }
+
+  printf("%g %g\n", sumx/win, sumy/win);
+
+  i = 0;
+  sumx -= x[i];
+  sumy -= y[i];
+
+  while (scanf("%lf %lf", &x[i], &y[i]) == 2) {
+    sumx += x[i];
+    sumy += y[i];
+    printf("%g %g\n", sumx/win, sumy/win);
+    if (++i >= win)
+      i = 0;
+    sumx -= x[i];
+    sumy -= y[i];
+  }
 }

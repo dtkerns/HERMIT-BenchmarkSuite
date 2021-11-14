@@ -71,8 +71,56 @@ MA 02139 USA). For updates to this software, please visit PhysioNet (http://www.
 
 char *pname;
 
-int main(int argc, char *argv[]) {
-    char *p, *record = NULL, *prog_name();
+char *prog_name(char *s) {
+    char *p = s + strlen(s);
+
+#ifdef MSDOS
+    while (p >= s && *p != '\\' && *p != ':') {
+        if (*p == '.') {
+            *p = '\0'; /* strip off extension */
+        }
+        if ('A' <= *p && *p <= 'Z') {
+            *p += 'a' - 'A'; /* convert to lower case */
+        }
+
+        p--;
+    }
+#else
+    while (p >= s && *p != '/') {
+        p--;
+    }
+#endif
+    return (p + 1);
+}
+
+static char *help_strings[] = {
+        "usage: %s -r RECORD [OPTIONS ...]\n",
+        "where RECORD is the name of the record to be analyzed, and OPTIONS may",
+        "include any of:",
+        " -f TIME     begin at specified time",
+        " -h          print this usage summary",
+        " -H          read multifrequency signals in high resolution mode",
+        " -m THRESH   set detector threshold to THRESH (default: 500)",
+        " -s SIGNAL   analyze specified signal (default: 0)",
+        " -t TIME     stop at specified time",
+        "If too many beats are missed, decrease THRESH;  if there are too many extra",
+        "detections, increase THRESH.",
+        NULL
+};
+
+void help()
+{
+    int i;
+
+    (void) fprintf(stderr, help_strings[0], pname);
+    for (i = 1; help_strings[i] != NULL; i++) {
+        (void) fprintf(stderr, "%s\n", help_strings[i]);
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    char *p, *record = NULL;
     int i, minutes = 0, nsig, time = 0,
            slopecrit, sign, maxslope = 0, nslope = 0,
            qtime, maxtime, t1, t2, t3, t4, t5, t6, t7, t8, t9,
@@ -82,7 +130,6 @@ int main(int argc, char *argv[]) {
     WFDB_Annotation annot;
     static int gvmode = WFDB_LOWRES;
     static WFDB_Siginfo *s;
-    void help();
 
     pname = prog_name(argv[0]);
 
@@ -314,49 +361,4 @@ int main(int argc, char *argv[]) {
 
     wfdbquit();
     return 0;
-}
-
-char *prog_name(char *s) {
-    char *p = s + strlen(s);
-
-#ifdef MSDOS
-    while (p >= s && *p != '\\' && *p != ':') {
-        if (*p == '.') {
-            *p = '\0'; /* strip off extension */
-        }
-        if ('A' <= *p && *p <= 'Z') {
-            *p += 'a' - 'A'; /* convert to lower case */
-        }
-
-        p--;
-    }
-#else
-    while (p >= s && *p != '/') {
-        p--;
-    }
-#endif
-    return (p + 1);
-}
-
-static char *help_strings[] = {
-        "usage: %s -r RECORD [OPTIONS ...]\n",
-        "where RECORD is the name of the record to be analyzed, and OPTIONS may",
-        "include any of:",
-        " -f TIME     begin at specified time",
-        " -h          print this usage summary",
-        " -H          read multifrequency signals in high resolution mode",
-        " -m THRESH   set detector threshold to THRESH (default: 500)",
-        " -s SIGNAL   analyze specified signal (default: 0)",
-        " -t TIME     stop at specified time",
-        "If too many beats are missed, decrease THRESH;  if there are too many extra",
-        "detections, increase THRESH.",
-        NULL};
-
-void help() {
-    int i;
-
-    (void) fprintf(stderr, help_strings[0], pname);
-    for (i = 1; help_strings[i] != NULL; i++) {
-        (void) fprintf(stderr, "%s\n", help_strings[i]);
-    }
 }

@@ -10,33 +10,7 @@ Usage: hours seconds | -
 #include <stdio.h>
 #include <stdlib.h>
 
-main(argc, argv)
-int argc;
-char *argv[];
-{
-    long sec, atol();
-    char *timstr();
-
-    if (argc < 2) {
-	usage(argv[0]);  
-	exit(1);
-    }
-
-    if (*argv[1] == '-')
-        switch (argv[1][1]) {
-	    case '\0' : while (scanf("%ld", &sec) == 1)
-	                    printf("%s\n", timstr(sec));
-		        exit(0);
-	    default : usage(argv[0]);
-		      exit(1);
-	}
-    else
-	printf("%s\n", timstr(atol(argv[1])));
-}
-
-
-char *timstr(time)	/* convert seconds to [hh:]mm:ss */
-long time;
+char *timstr(long time)	/* convert seconds to [hh:]mm:ss */
 {
     int hours, minutes, seconds;
     static char buf[9];
@@ -48,11 +22,30 @@ long time;
     return (buf);
 }
 
-
-usage(prog)
-char *prog;
+void usage(char *prog)
 {
     fprintf(stderr, "Usage: %s seconds | -\n", prog);
     fprintf(stderr, " Convert seconds to hh:mm:ss.\n");
     fprintf(stderr, " `-' to read stdin\n");
+}
+
+int main(int argc, char *argv[])
+{
+    long sec, atol();
+
+    if (argc < 2) {
+	usage(argv[0]);  
+	exit(1);
+    }
+
+    if (*argv[1] == '-') {
+        switch (argv[1][1]) {
+	    case '\0': while (scanf("%ld", &sec) == 1)
+	                    printf("%s\n", timstr(sec));
+		        exit(0);
+	    default : usage(argv[0]);
+		      exit(1);
+	}
+     } else
+	printf("%s\n", timstr(atol(argv[1])));
 }

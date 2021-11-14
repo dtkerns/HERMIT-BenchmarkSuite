@@ -33,7 +33,13 @@ Reads stdin and outputs n, av, and sd of data
 #include <stdio.h>
 #include <math.h>
 
-int main(int argc, char *argv[]) {
+void usage(char *prog) {
+  fprintf(stderr, "Usage : %s\n\n", prog);
+  fprintf(stderr, " Reads stdin and outputs n, av, and sd of data\n");
+}
+
+int main(int argc, char *argv[])
+{
   int cnt;
   double n, sum, sum2;
   double av, var, sd;
@@ -58,9 +64,4 @@ int main(int argc, char *argv[]) {
 
   printf("%d %g %g\n", cnt, av, sd);
   return 0;
-}
-
-void usage(char *prog) {
-  fprintf(stderr, "Usage : %s\n\n", prog);
-  fprintf(stderr, " Reads stdin and outputs n, av, and sd of data\n");
 }

@@ -34,81 +34,57 @@ dt : sampling interval
 #include <stdio.h>
 #include <stdlib.h>
 
-main(argc, argv
-)
-int argc;
-char *argv[];
-{
-
-int i;
-double dx, x0, x[2], y[2];
-double intrpolt();
-
-if (argc  != 2 ) {
-usage(argv[0]);
-exit(1);
-}
-
-if ((
-dx = atof(argv[1])
-) <= 0) {
-fprintf(stderr,
-"%s : dt must be greater than 0\n", argv[0]);
-exit(1);
-}
-
-for (
-i = 0;
-i<2; i++)
-if (scanf("%lf %lf", &x[i], &y[i]) < 2)
-exit(1);
-
-printf("%g %g\n", x[0], y[0]);
-x0 = x[0] + dx;
-
-for (;; ) {
-
-while (x0 > x[1]) {
-x[0] = x[1];
-y[0] = y[1];
-
-if (scanf("%lf %lf", &x[1], &y[1]) < 2 )
-exit(0);       /* Normal exit from program */
-
-}
-
-printf("%g %g\n", x0,
-intrpolt(x0, x, y
-));
-
-x0 +=
-dx;
-}
-}
-
-
-double intrpolt(x0, x, y)
-    double x0, *x, *y;
+double intrpolt(double x0, double *x, double *y)
 {
   double a, b;
-
   b = (y[1] - y[0]) / (x[1] - x[0]);
   a = y[0] - b * x[0];
-
   return (b * x0 + a);
 }
 
-usage(prog)
-char *prog;
+void usage(char *prog)
 {
+  fprintf(stderr, "Usage : %s dt\n\n", prog);
+  fprintf(stderr, " Resample stdin by linear interpolation\n");
+  fprintf(stderr, " Output evenly sampled data\n\n");
+  fprintf(stderr, " dt : sampling interval\n");
+}
 
-fprintf(stderr,
-"Usage : %s dt\n\n", prog);
-fprintf(stderr,
-" Resample stdin by linear interpolation\n");
-fprintf(stderr,
-" Output evenly sampled data\n\n");
-fprintf(stderr,
-" dt : sampling interval\n");
+int main(int argc, char *argv[])
+{
+  int i;
+  double dx, x0, x[2], y[2];
+  double intrpolt();
 
+  if (argc  != 2 ) {
+    usage(argv[0]);
+    exit(1);
+  }
+
+  if ((dx = atof(argv[1])) <= 0) {
+    fprintf(stderr, "%s : dt must be greater than 0\n", argv[0]);
+    exit(1);
+  }
+
+  for (i = 0; i<2; i++)
+    if (scanf("%lf %lf", &x[i], &y[i]) < 2)
+      exit(1);
+
+  printf("%g %g\n", x[0], y[0]);
+  x0 = x[0] + dx;
+
+  for (;;) {
+    while (x0 > x[1]) {
+      x[0] = x[1];
+      y[0] = y[1];
+
+      if (scanf("%lf %lf", &x[1], &y[1]) < 2 )
+        exit(0);       /* Normal exit from program */
+    }
+
+    printf("%g %g\n", x0,
+    intrpolt(x0, x, y));
+
+    x0 += dx;
+  }
 }

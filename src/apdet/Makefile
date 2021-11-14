@@ -2,7 +2,7 @@
 
 CC = gcc
 BINDIR = /usr/local/bin
-ALL = av detruns filt ht htavsd htmedfilt ldetrend linsamp mm rrlist smooth
+ALL = apdet av detruns filt ht htavsd htmedfilt ldetrend linsamp mm rrlist smooth
 
 all :		$(ALL)
 
@@ -19,36 +19,39 @@ install :	all
 clean :
 	rm -f $(ALL) *.o *~ core
 
+apdet :		apdet.c
+	$(CC) -O -o $@ $^ -lm
+
 av :		av.c
-	$(CC) -O -o $@ av.c -lm
+	$(CC) -O -o $@ $^ -lm
 
 detruns :	detruns.c
-	$(CC) -O -o $@ detruns.c
+	$(CC) -O -o $@ $^
 
 filt :		filt.c
-	$(CC) -O -o $@ filt.c
+	$(CC) -O -o $@ $^
 
 ht :		ht.c
-	$(CC) -O -o $@ ht.c -lm
+	$(CC) -O -o $@ $^ -lm
 
 htavsd :	htavsd.c
-	$(CC) -O -o $@ htavsd.c -lm
+	$(CC) -O -o $@ $^ -lm
 
 htmedfilt :	htmedfilt.c
-	$(CC) -O -o $@ htmedfilt.c
+	$(CC) -O -o $@ $^
 
 ldetrend :	ldetrend.c
-	$(CC) -O -o $@ ldetrend.c
+	$(CC) -O -o $@ $^
 
 linsamp :	linsamp.c
-	$(CC) -O -o $@ linsamp.c
+	$(CC) -O -o $@ $^
 
 mm :		mm.c
-	$(CC) -O -o $@ mm.c
+	$(CC) -O -o $@ $^
 
-rrlist :	rrlist.c
-	$(CC) -O -o $@ rrlist.c
+rrlist :	rrlist.c ../../include/wfdb/signal.c
+	$(CC) -O -o $@ $<
 
 smooth :	smooth.c
-	$(CC) -O -o $@ smooth.c
+	$(CC) -O -o $@ $^
 

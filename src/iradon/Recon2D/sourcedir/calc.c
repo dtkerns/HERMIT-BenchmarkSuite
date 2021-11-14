@@ -213,8 +213,8 @@ void BackProject(Image *Sinogram, Image *InvMyImage) {
         RhoInt = (int) (Rho = (datam[t] + datan[t]));
         /* if (Rho>=Sinogram->N || Rho<0) printf("* %d %d %d %f \n", m,n,t,Rho); */
         datat = &Sinogram->Signal[t][RhoInt];
-        sum += datat[0] * (1 - (DeltaRho = (Rho - RhoInt)))
-            + datat[1] * DeltaRho;
+        DeltaRho = Rho - RhoInt;
+        sum += datat[0] * (1 - DeltaRho) + datat[1] * DeltaRho;
       }
       InvMyImage->Signal[m][n] = sum * Sinogram->DeltaX;
     }
@@ -440,6 +440,7 @@ Image *BackFilter(Image *MyImage) {
   Print(_DNormal, "Filtering ...\n");
 
   M = N = (int) ((MyImage->N - 1) / (float) sqrt(2)) + 1;
+  (void) M;
   Print(_DDebug, "Backprojected image dim.: M:%i N:%i\n", IniFile.XSamples, IniFile.YSamples);
 
   OldHeight = IniFile.XSamples;
@@ -879,6 +880,7 @@ Image *CentralSliceCZ(Image *MyImage) {
   deltarho = MyImage->DeltaY;
   rhosamples = InvMyImage->N * 2.0;
   rhomin = -(fourierimage->M - 1) / 2 * MyImage->DeltaY;
+  (void) rhomin;
   fourierimage->Xmin = 0.5 / (float) deltarho;
   fourierimage->Ymin = 0.5 / (float) deltarho;
   fourierimage->DeltaX = 1.0 / (rhosamples * deltarho);

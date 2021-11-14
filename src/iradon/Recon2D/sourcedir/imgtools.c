@@ -843,9 +843,10 @@ Image *ReadDAT(char *FileName) {
   if (!(InFile = fopen(InFileName, "rb")))
     Error("Error opening file: `%s'", InFileName);
 
-  fread(&type, sizeof(int), 1, InFile);
-  fread(&M, sizeof(int), 1, InFile);
-  fread(&N, sizeof(int), 1, InFile);
+  int rc = fread(&type, sizeof(int), 1, InFile);
+  rc += fread(&M, sizeof(int), 1, InFile);
+  rc += fread(&N, sizeof(int), 1, InFile);
+  (void) rc;
 
   Print(_DNormal, "(%dx%d)\n", M, N);
 
@@ -954,7 +955,8 @@ Image *ReadFIFHeader(char *FileName) {
   if (!(NewImage = (Image *) malloc(sizeof(Image))))
     Error("\nMemory allocation problems (ReadFIFHeader)\n");
 
-  fread(NewImage, sizeof(Image), 1, InFile);
+  int rc = fread(NewImage, sizeof(Image), 1, InFile);
+  (void) rc;
 
   if (NewImage->FIFIdType != _00EI) {
     DoConvert = TRUE;
@@ -1020,7 +1022,8 @@ Image *ReadFIF(char *FileName) {
   if (!(NewImage = (Image *) malloc(sizeof(Image))))
     Error("\nMemory allocation problems (ReadFIF)\n");
 
-  fread(NewImage, sizeof(Image), 1, InFile);
+  int rc = fread(NewImage, sizeof(Image), 1, InFile);
+  (void) rc;
 
   if (NewImage->FIFIdType != _00EI) {
     DoConvert = TRUE;
@@ -1447,19 +1450,19 @@ Image *ReadMatLab(char *FileName) {
       if (fread(&InChars, sizeof(char), NumberOfBytes, InFile) != NumberOfBytes)
         Error("Error reading file: `%s'", InFileName);
       switch (ElementType) {
-        case 0: if (DoConvert) convert8(InChars);
+        case 0: if (DoConvert) convert8((char *)InChars);
           NewImage->Signal[m][n * NewImage->ArrayType] = *(double *) InChars;
           break;
-        case 1: if (DoConvert) convert4(InChars);
+        case 1: if (DoConvert) convert4((char *)InChars);
           NewImage->Signal[m][n * NewImage->ArrayType] = *(float *) InChars;
           break;
-        case 2: if (DoConvert) convert4(InChars);
+        case 2: if (DoConvert) convert4((char *)InChars);
           NewImage->Signal[m][n * NewImage->ArrayType] = *(int *) InChars;
           break;
-        case 3: if (DoConvert) convert2(InChars);
+        case 3: if (DoConvert) convert2((char *)InChars);
           NewImage->Signal[m][n * NewImage->ArrayType] = *(short int *) InChars;
           break;
-        case 4: if (DoConvert) convert2(InChars);
+        case 4: if (DoConvert) convert2((char *)InChars);
           NewImage->Signal[m][n * NewImage->ArrayType] = *(unsigned short int *) InChars;
           break;
         case 5: NewImage->Signal[m][n * NewImage->ArrayType] = *(unsigned char *) InChars;
@@ -1473,19 +1476,19 @@ Image *ReadMatLab(char *FileName) {
         if (fread(&InChars, sizeof(char), NumberOfBytes, InFile) != NumberOfBytes)
           Error("Error reading file: `%s'", InFileName);
         switch (ElementType) {
-          case 0: if (DoConvert) convert8(InChars);
+          case 0: if (DoConvert) convert8((char *)InChars);
             NewImage->Signal[m][n * NewImage->ArrayType] = *(double *) InChars;
             break;
-          case 1: if (DoConvert) convert4(InChars);
+          case 1: if (DoConvert) convert4((char *)InChars);
             NewImage->Signal[m][n * NewImage->ArrayType] = *(float *) InChars;
             break;
-          case 2: if (DoConvert) convert4(InChars);
+          case 2: if (DoConvert) convert4((char *)InChars);
             NewImage->Signal[m][n * NewImage->ArrayType] = *(int *) InChars;
             break;
-          case 3: if (DoConvert) convert2(InChars);
+          case 3: if (DoConvert) convert2((char *)InChars);
             NewImage->Signal[m][n * NewImage->ArrayType] = *(short int *) InChars;
             break;
-          case 4: if (DoConvert) convert2(InChars);
+          case 4: if (DoConvert) convert2((char *)InChars);
             NewImage->Signal[m][n * NewImage->ArrayType] = *(unsigned short int *) InChars;
             break;
           case 5: NewImage->Signal[m][n * NewImage->ArrayType] = *(unsigned char *) InChars;
@@ -1620,7 +1623,8 @@ Image *ReadAnalyze(char *FileName, int LayerNumber) {
   if (!(InFile = fopen(InFileName, "rb")))
     Error("Error opening file: '%s'", InFileName);
 
-  fread(&AnalyzeHeader, sizeof(dsr), 1, InFile);
+  int rc = fread(&AnalyzeHeader, sizeof(dsr), 1, InFile);
+  (void) rc;
 
   fclose(InFile);
 
@@ -1645,6 +1649,7 @@ Image *ReadAnalyze(char *FileName, int LayerNumber) {
   N = AnalyzeHeader.dime.dim[1];
   ScaleFactor = AnalyzeHeader.dime.funused9;
   OffSet = AnalyzeHeader.dime.funused8;
+  (void) OffSet;
   ABPP = AnalyzeHeader.dime.bitpix / 8; /* To find number of bytes per pixel.*/
 
   strcpy(InFileName, FileName);
@@ -1693,9 +1698,10 @@ Image *ReadAnalyze(char *FileName, int LayerNumber) {
           TempInt += (char unsigned) TempChar;
         }
         /* Right sign of the data. */
-        if (AnalyzeHeader.dime.glmin < 0)
+        if (AnalyzeHeader.dime.glmin < 0) {
           if (ABPP == 1) TempInt = (signed char) TempInt;
           else if (ABPP == 2) TempInt = (signed short int) TempInt;
+        }
         /*   */
         NewImage->Signal[m][n] = (float) TempInt * ScaleFactor;
       }
@@ -1710,9 +1716,10 @@ Image *ReadAnalyze(char *FileName, int LayerNumber) {
           TempInt += (char unsigned) TempChar;
         }
         /* Right sign of the data. */
-        if (AnalyzeHeader.dime.glmin < 0)
+        if (AnalyzeHeader.dime.glmin < 0) {
           if (ABPP == 1) TempInt = (signed char) TempInt;
           else if (ABPP == 2) TempInt = (signed short int) TempInt;
+        }
         /*   */
         NewImage->Signal[m][n] = (float) TempInt * ScaleFactor;
       }

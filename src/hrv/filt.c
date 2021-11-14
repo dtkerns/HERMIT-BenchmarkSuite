@@ -32,10 +32,67 @@ int ncols;
 static double x[MAXWIN+1], y[MAXWIN+1];
 FILE *fp;
 
+int lineget(int i)
+{
+    int j;
+    static int n = 1;
 
-main(argc, argv)
-int argc;
-char * argv[];
+    if (fgets(line, MAXSTR, stdin) == NULL)
+        return(EOF);
+
+    if (ncols == 1) {
+        if ((j = sscanf(line, "%lf %s", &y[i], tmp)) != 1) {
+            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
+	    fprintf(stderr, "line = %d\n", n+1);
+	    exit(2);
+        }
+	x[i] = n;
+    }
+    else if (ncols == 2) {
+        if ((j = sscanf(line, "%lf %lf %s", &x[i], &y[i], tmp)) != 2) {
+            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
+	    fprintf(stderr, "line = %d\n", n+1);
+	    exit(2);
+        }
+    }
+
+    n++;
+
+    return(j);
+}
+
+void printline(int i)
+{
+    if (ncols == 2)
+        printf("%.9g ", x[i]);
+    printf("%g\n", y[i]);
+}
+
+void fprintline(int i)
+{
+    if (ncols == 2)
+        fprintf(fp, "%.9g ", x[i]);
+    fprintf(fp, "%g\n", y[i]);
+}
+
+void usage()
+{
+    fprintf(stderr, "Usage: %s filt hwin [options]\n", prog);
+    fprintf(stderr, " Reads 1 (y) or 2 (x,y) columns from stdin and\n");
+    fprintf(stderr, " filters outliers by deleting those intervals outside\n");
+    fprintf(stderr, " of `filt' range of the average within a window\n");
+    fprintf(stderr, " `hwin' distance on either side of the\n");
+    fprintf(stderr, " current interval.\n\n");
+    fprintf(stderr, " options are :\n");
+    fprintf(stderr, " [-x min max] : exclude date outside min - max\n");
+    fprintf(stderr, " [-n] : print ratio of nout to nin\n");
+    fprintf(stderr, " [-p file] : print excluded points to file\n");
+    fprintf(stderr, "             not including start/end hwin buffer\n");
+    fprintf(stderr, " excluded points may not be printed in time\n");
+    fprintf(stderr, " sequential order if -x opption is used\n");
+}
+
+int main(int argc, char * argv[])
 {
     int hwin, win, i, j, k, nin, nout;
     int xflag, nflag, pflag;
@@ -206,72 +263,4 @@ char * argv[];
 		nout, nin, (double)nout/nin);
 
     exit(0);
-}
-
-
-
-lineget(i)
-int i;
-{
-    int j;
-    static int n = 1;
-
-    if (fgets(line, MAXSTR, stdin) == NULL)
-        return(EOF);
-
-    if (ncols == 1) {
-        if ((j = sscanf(line, "%lf %s", &y[i], tmp)) != 1) {
-            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
-	    fprintf(stderr, "line = %d\n", n+1);
-	    exit(2);
-        }
-	x[i] = n;
-    }
-    else if (ncols == 2) {
-        if ((j = sscanf(line, "%lf %lf %s", &x[i], &y[i], tmp)) != 2) {
-            fprintf(stderr, "%s: incorrectly formatted data : ", prog);
-	    fprintf(stderr, "line = %d\n", n+1);
-	    exit(2);
-        }
-    }
-
-    n++;
-
-    return(j);
-}
-
-
-printline(i)
-int i;
-{
-    if (ncols == 2)
-        printf("%.9g ", x[i]);
-    printf("%g\n", y[i]);
-}
-
-
-fprintline(i)
-int i;
-{
-    if (ncols == 2)
-        fprintf(fp, "%.9g ", x[i]);
-    fprintf(fp, "%g\n", y[i]);
-}
-
-
-usage()
-{
-    fprintf(stderr, "Usage: %s filt hwin [options]\n", prog);
-    fprintf(stderr, " Reads 1 (y) or 2 (x,y) columns from stdin and\n");
-    fprintf(stderr, " filters outliers by deleting those intervals outside\n");
-    fprintf(stderr, " of `filt' range of the average within a window\n");
-    fprintf(stderr, " `hwin' distance on either side of the\n");
-    fprintf(stderr, " current interval.\n\n");
-    fprintf(stderr, " options are :\n");
-    fprintf(stderr, " [-x min max] : exclude date outside min - max\n");
-    fprintf(stderr, " [-n] : print ratio of nout to nin\n");
-    fprintf(stderr, " [-p file] : print excluded points to file\n");
-    fprintf(stderr, "             not including start/end hwin buffer\n");
-    fprintf(stderr, " excluded points may not be printed in time\n");
-    fprintf(stderr, " sequential order if -x opption is used\n");
 }
