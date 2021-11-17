@@ -8,6 +8,10 @@ inputsDir = $(curDir)/inputs
 export srcDir
 export binDir
 
+ifneq ($(ll),)
+export ll
+endif
+
 kernels = activity apdet hrv imghist iradon kmeans sqrs wabp
 suppKernels = aes lzw
 
@@ -15,28 +19,27 @@ suppKernels = aes lzw
 all : $(kernels)
 
 aes :
-	mkdir -p $(binDir)/$@
-	cd $(srcDir)/$@; make
-	mv $(srcDir)/$@/$@ $(binDir)/$@
-	cp $(inputsDir)/$@/* $(binDir)/$@/
-	cp $(scriptDir)/run-$@.sh $(binDir)/$@/
+	$(MAKE) -C $(srcDir)/$@
+	$(if $(ll),,mkdir -p $(binDir)/$@)
+	$(if $(ll),,mv $(srcDir)/$@/$@ $(binDir)/$@)
+	$(if $(ll),,cp $(inputsDir)/$@/* $(binDir)/$@/)
+	$(if $(ll),,cp $(scriptDir)/run-$@.sh $(binDir)/$@/)
 
 lzw :
-	mkdir -p $(binDir)/$@
-	cd $(srcDir)/$@; make
-	mv $(srcDir)/$@/$@ $(binDir)/$@
-	cp $(inputsDir)/$@/* $(binDir)/$@/
-	cp $(scriptDir)/run-$@.sh $(binDir)/$@/
+	$(MAKE) -C $(srcDir)/$@
+	$(if $(ll),,mkdir -p $(binDir)/$@)
+	$(if $(ll),,mv $(srcDir)/$@/$@ $(binDir)/$@)
+	$(if $(ll),,cp $(inputsDir)/$@/* $(binDir)/$@/)
+	$(if $(ll),,cp $(scriptDir)/run-$@.sh $(binDir)/$@/)
 
 $(kernels) : aes lzw
-	mkdir -p $(binDir)/$@
-	cd $(srcDir)/$@; make
-	mv $(srcDir)/$@/$@ $(binDir)/$@
-	cp $(binDir)/aes/aes $(binDir)/$@/
-	cp $(binDir)/lzw/lzw $(binDir)/$@/
-	cp $(inputsDir)/$@/* $(binDir)/$@/
-	cp $(scriptDir)/run-$@.sh $(binDir)/$@/
-
+	$(MAKE) -C $(srcDir)/$@
+	$(if $(ll),,mkdir -p $(binDir)/$@)
+	$(if $(ll),,mv $(srcDir)/$@/$@ $(binDir)/$@)
+	$(if $(ll),,cp $(binDir)/aes/aes $(binDir)/$@/)
+	$(if $(ll),,cp $(binDir)/lzw/lzw $(binDir)/$@/)
+	$(if $(ll),,cp $(inputsDir)/$@/* $(binDir)/$@/)
+	$(if $(ll),,cp $(scriptDir)/run-$@.sh $(binDir)/$@/)
 
 .PHONY : clean
 clean :

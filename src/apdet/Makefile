@@ -1,10 +1,14 @@
 # Makefile		Joe Mietus		Dec 19 2001
 
-CC = gcc
+CC ?= gcc
 BINDIR = /usr/local/bin
 ALL = apdet av detruns filt ht htavsd htmedfilt ldetrend linsamp mm rrlist smooth
 
-all :		$(ALL)
+ifneq ($(ll),)
+ALL := $(addsuffix .ll,$(ALL))
+endif
+
+all : $(ALL)
 
 help:
 	@echo "Type 'make all' to compile everything in this directory."
@@ -18,6 +22,9 @@ install :	all
 
 clean :
 	rm -f $(ALL) *.o *~ core
+
+%.ll: %.c
+	clang -S -emit-llvm $^ -o $@
 
 apdet :		apdet.c
 	$(CC) -O -o $@ $^ -lm
@@ -55,3 +62,4 @@ rrlist :	rrlist.c ../../include/wfdb/signal.c
 smooth :	smooth.c
 	$(CC) -O -o $@ $^
 
+.PHONY: all help install clean

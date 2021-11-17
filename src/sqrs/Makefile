@@ -1,17 +1,24 @@
 
-CC = gcc
+CC ?= gcc
 
 CFILES = $(wildcard *.c)
 INCFILES = $(wildcard include/*.c) $(wildcard include/*.h)
-XFILES = $(CFILES:.c=)
 
-CFLAGS = -static
-
-%: %.c
-	$(CC) $(CFILES) $(CFLAGS) -o $@
+ifneq ($(ll),)
+CC = clang
+CFLAGS += -S -emit-llvm
+XFILES = sqrs.ll
+else
+CFLAGS += -static
+XFILES = sqrs
+endif
 
 all: $(XFILES)
 
-.PHONY: clean
+$(XFILES): $(CFILES)
+	$(CC) $(CFILES) $(CFLAGS) -o $@
+
 clean:
 	rm -f $(XFILES) *.qrs
+
+.PHONY: all clean

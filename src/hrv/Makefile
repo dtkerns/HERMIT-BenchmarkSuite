@@ -15,7 +15,14 @@ SCRIPTS = get_hrv plt_rrs
 # These binaries are compiled by 'make all'.
 ALL = filt filtnn hours hrv pwr rrlist seconds statnn
 
+ifneq ($(ll),)
+ALL := $(addsuffix .ll,$(ALL))
+endif
+
 all:		$(ALL)
+
+%.ll : %.c
+	clang -S -emit-llvm $^ -o $@
 
 # 'make install' copies the HRV toolkit's scripts and binaries to BINDIR.
 install:	all
@@ -55,3 +62,5 @@ seconds :	seconds.c
 
 statnn :	statnn.c
 	$(CC) -O -o $@ $^ -lm
+
+.PHONY: all install clean bin-tarball

@@ -8,6 +8,7 @@
 # Compiled Object files
 *.slo
 *.lo
+*.ll
 *.o
 *.obj
 *.ko

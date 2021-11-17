@@ -1,18 +1,25 @@
 
-CC = gcc
+CC ?= gcc
 
 CFILES = $(wildcard *.c)
 INCFILES = $(wildcard include/*.c) $(wildcard include/*.h)
-XFILES = $(CFILES:.c=)
 
-CFLAGS = -static
-LDFLAGS = -lm
+ifneq ($(ll),)
+CC = clang
+CFLAGS += -S -emit-llvm
+XFILES = wapb.ll
+else
+CFLAGS += -static
+LDFLAGS += -lm
+XFILES = wabp
+endif
+
+all: $(XFILES)
 
 $(XFILES):
 	$(CC) $(CFILES) $(CFLAGS) -o $@ $(LDFLAGS)
 
-all: $(XFILES)
-
-.PHONY: clean
 clean:
 	rm -f $(XFILES) *.wabp
+
+.PHONY: all clean
