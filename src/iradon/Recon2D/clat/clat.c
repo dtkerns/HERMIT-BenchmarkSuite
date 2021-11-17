@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 FILE *infilep,*outfilep;
 char *poi,*EndFile,*chrprt,outfilename[200],*infilename,text[200],cfilename[200];
@@ -60,7 +61,7 @@ int main(int argc,char * argv[])
         if (hea==1) {
           fgets(text,200,infilep);
           while ((strstr(text,"[")!=text) && (strstr(text,"**/")==NULL)) {
-            fprintf(outfilep,text);
+            fputs(text,outfilep);
             fgets(text,200,infilep);
           }
         } else {
@@ -70,7 +71,7 @@ int main(int argc,char * argv[])
             fgets(text,200,infilep);
             while ((strstr(text,"[")!=text) && (strstr(text,"**/")==NULL)) {
               if (strstr(text,"\n")!=text) {
-                fprintf(outfilep,text);
+                fputs(text,outfilep);
               }
               fgets(text,200,infilep);
             }
@@ -93,7 +94,7 @@ int main(int argc,char * argv[])
               if (rev==1) fprintf(outfilep,"\n\\item[Revision]\n\\hspace*{1mm}\n\n");
               EndFile=fgets(text,200,infilep);
               while ((strstr(text,"[")!=text) && (strstr(text,"**/")==NULL)) {
-                fprintf(outfilep,text);
+                fputs(text,outfilep);
                 fgets(text,200,infilep);
               }
             }
