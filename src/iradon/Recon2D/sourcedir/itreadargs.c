@@ -114,10 +114,11 @@ void ReadItArgs(char *IniBuffer) {
     Print(_DNormal, "Startguess = '%s.fif'\n",
           itINI.StartFileName);
     tempImage = ReadFIFHeader(itINI.StartFileName);
-    if (strlen(itINI.RefFileName) != 0)
+    if (strlen(itINI.RefFileName) != 0) {
       if (memcmp(&refImage->M, &tempImage->M, sizeof(float) * 7) != 0)
         Error("RefImage and StartImage have different sampling parameters.");
-      else Print(_DNormal, "ref- and startImage has equal sampling parameters.\n");
+      else Print(_DNormal, "ref- and startImage have equal sampling parameters.\n");
+    }
     if (strlen(itINI.RefFileName) == 0) {
       Print(_DNormal, "Output sampling parameters taken from startImage, `%s'\n",
             itINI.StartFileName);

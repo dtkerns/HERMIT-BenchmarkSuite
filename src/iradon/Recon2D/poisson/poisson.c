@@ -91,7 +91,7 @@ void Generate(char *SinogramFileName,float Norm)
   WriteFIF(Sim_Sinogram);
 }  
 
-void main(int argc,char * argv[])
+int main(int argc,char * argv[])
 {
   idum=(int *)malloc(sizeof(int));
   idum[0]=37;
@@ -106,6 +106,7 @@ void main(int argc,char * argv[])
     exit(1);
   }
   Generate(argv[1],atof(argv[2]));
+  return 0;
 }
 
 

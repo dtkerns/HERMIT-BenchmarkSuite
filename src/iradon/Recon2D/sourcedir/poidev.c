@@ -27,7 +27,7 @@ float poidev(float xm, int *idum) {
     }
     do {
       do {
-        y = tan(PI * ran1(idum));
+        y = tan(M_PI * ran1(idum));
         em = sq * y + xm;
       } while (em < 0.0);
       em = floor(em);

@@ -128,14 +128,14 @@ Image *FAST_ART(SparseMatrix *AMatrix, Vector *xvector, Vector *bvector) {
     refxvector = ImageToVector(RefImage);
     FreeImage(RefImage);
     refxdev = DeviationVector(refxvector);
-    tempXrv = refxvector->value;
+    tempXrv = refxvector->value; (void) tempXrv; // warning clean up (set but not used)
     strcpy(DiffFileName, itINI.OutFileName);
     strcat(DiffFileName, ".dif");
     DiffFile = fopen(DiffFileName, "wt");
     Print(_DNormal, "Logging differences in `%s' \n", DiffFileName);
   }
 
-  tempXv = xvector->value;
+  tempXv = xvector->value; (void) tempXv; // warning clean up (set but not used)
   tempBv = bvector->value;
   srand((int) clock());
   lambda = itINI.Alpha / itINI.Beta;
@@ -228,14 +228,14 @@ Image *SLOW_ART(Vector *xvector, Vector *bvector) {
     refxvector = ImageToVector(RefImage);
     FreeImage(RefImage);
     refxdev = DeviationVector(refxvector);
-    tempXrv = refxvector->value;
+    tempXrv = refxvector->value; (void) tempXrv; // warning cleanup (set but not used)
     strcpy(DiffFileName, itINI.OutFileName);
     strcat(DiffFileName, ".dif");
     DiffFile = fopen(DiffFileName, "wt");
     Print(_DNormal, "Logging differences in `%s' \n", DiffFileName);
   }
 
-  tempXv = xvector->value;
+  tempXv = xvector->value; (void) tempXv; // warning cleanup (set but not used)
   tempBv = bvector->value;
   srand((int) clock());
   lambda = itINI.Alpha / itINI.Beta;

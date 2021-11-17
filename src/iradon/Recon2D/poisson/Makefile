@@ -1,4 +1,4 @@
-CC = gcc
+CC ?= gcc
 
 sd= ../sourcedir
 
@@ -24,6 +24,7 @@ CFLAGS     = -O2 -finline-functions -Winline -Wall
 #CFLAGS      = -g
 LFLAGS      = -lm
 
+all: $(EXE)
 
 $(EXE) : $(OBJS)
 	$(CC) $(CFLAGS) -o $(EXE) $(OBJS) $(LFLAGS)

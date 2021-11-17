@@ -24,12 +24,13 @@ IDIR      = -I../include
 
 OBJS        = $(SOURCES:.c=.o)
 
-CFLAGS     = -O3 -finline-functions -Winline -Wall -m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2 -Wstrict-prototypes
+CFLAGS     = -O3 -finline-functions -Winline -Wall -falign-loops=2 -falign-jumps=2 -falign-functions=2 -Wstrict-prototypes
 
 #CFLAGS      = -g -Wstrict-prototypes -Winline -Wall
 
 LFLAGS      = -lm
 
+all: $(EXE)
 
 $(EXE) : $(OBJS)
 	$(CC) $(CFLAGS) -o $(EXE) $(OBJS) $(LFLAGS)

@@ -98,7 +98,7 @@ FreeImage(Mask);
     RefImage = ReadFIF(itINI.RefFileName);
     refxvector = ImageToVector(RefImage);
     FreeImage(RefImage);
-    tempXrv = refxvector->value;
+    tempXrv = refxvector->value; (void) tempXrv; // warning clean up (set but not used)
     refxdev = DeviationVector(refxvector);
     strcpy(DiffFileName, itINI.OutFileName);
     strcat(DiffFileName, ".dif");
@@ -205,7 +205,7 @@ Image *SLOW_EM(Vector *xvector, Vector *bvector) {
     RefImage = ReadFIF(itINI.RefFileName);
     refxvector = ImageToVector(RefImage);
     FreeImage(RefImage);
-    tempXrv = refxvector->value;
+    tempXrv = refxvector->value; (void) tempXrv; // warning clean up (set but not used)
     refxdev = DeviationVector(refxvector);
     strcpy(DiffFileName, itINI.OutFileName);
     strcat(DiffFileName, ".dif");

@@ -1,4 +1,4 @@
-CC = gcc
+CC ?= gcc
 
 SOURCEDIR= ../sourcedir
 
@@ -26,7 +26,7 @@ CFLAGS      = -g
 
 LFLAGS   = -lm 
 
-all     :       $(EXE)
+all: $(EXE)
 
 $(EXE): $(OBJS)
 	$(CC) -o $(EXE) $(OBJS) $(LFLAGS)

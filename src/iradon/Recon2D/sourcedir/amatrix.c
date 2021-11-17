@@ -237,7 +237,7 @@ void RegulateMatrix(SparseMatrix *AMatrix) {
     for (x = 1 ; x < (XSamples - 1) ; x++) {
       vec = InitSparseVector(5);
       tempVi = vec->index;
-      tempVv = vec->value;
+      tempVv = vec->value; (void) tempVv; // warning clean up (set but not used)
       tempVi[0] = (y - 1) * XSamples + x;
       tempVi[1] = y * XSamples + x - 1;
       tempVi[2] = y * XSamples + x;
@@ -291,9 +291,9 @@ void RegulateL1Matrix(SparseMatrix *AMatrix) {
     for (x = 1 ; x < XSamples ; x++) {
       vec = InitSparseVector(1);
       tempVi = vec->index;
-      tempVv = vec->value;
+      tempVv = vec->value; (void) tempVv; // warning clean up (set but not used)
       tempVi[0] = y * XSamples + x;
-      memcpy(vec->value, &Reg, sizeof(float *));
+      memcpy(vec->value, &Reg, sizeof(float));
       InsertSparseVector(RMatrix, vec, x + y * XSamples);
     }
   }

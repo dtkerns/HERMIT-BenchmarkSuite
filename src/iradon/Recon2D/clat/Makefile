@@ -1,4 +1,4 @@
-CC = gcc
+CC ?= gcc
 
 OUTPUT   = clat
 
@@ -8,5 +8,10 @@ OBJS       = $(sources:.c=.o)
 # CFLAGS     = -g
 LFLAGS     = -lm
 
+all: $(OUTPUT)
+
 $(OUTPUT): $(OBJS)
 	$(CC) $(CFLAGS) -o $(OUTPUT) $(OBJS) $(LFLAGS)
+
+clean:
+	$(RM) $(OUTPUT)

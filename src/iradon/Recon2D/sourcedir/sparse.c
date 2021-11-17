@@ -555,7 +555,8 @@ itINItype *ReadSIFHeader(char *filename) {
   if (!(infile = fopen(infilename, "rb")))
     Error("Error opening file: '%s'", infilename);
 
-  fread(MyitINI, sizeof(itINItype), 1, infile);
+  int n = fread(MyitINI, sizeof(itINItype), 1, infile);
+  (void)n;
   fclose(infile);
 
   return MyitINI;
@@ -594,9 +595,9 @@ SparseMatrix *ReadSIF(itINItype *MyitINI, char *filename) {
   if (!(infile = fopen(infilename, "rb")))
     Error("Error opening file: '%s'", infilename);
 
-  fread(MyitINI, sizeof(itINItype), 1, infile);
-  fread(&M, sizeof(int), 1, infile);
-  fread(&N, sizeof(int), 1, infile);
+  int n = fread(MyitINI, sizeof(itINItype), 1, infile);
+  n = fread(&M, sizeof(int), 1, infile);
+  n = fread(&N, sizeof(int), 1, infile);
 
   tempM = InitSparseMatrix(M, N);
 
@@ -604,16 +605,16 @@ SparseMatrix *ReadSIF(itINItype *MyitINI, char *filename) {
         infilename, tempM->M, tempM->N);
 
   tempNm = IntVector(tempM->M);
-  fread(tempNm, sizeof(int) * tempM->M, 1, infile);
+  n = fread(tempNm, sizeof(int) * tempM->M, 1, infile);
 
   for (m = 0 ; m < tempM->M ; m++) {
     tempV = InitSparseVector(tempNm[m]);
-    fread(tempV->index, sizeof(int) * tempNm[m], 1, infile);
-    fread(tempV->value, sizeof(float) * tempNm[m], 1, infile);
+    n = fread(tempV->index, sizeof(int) * tempNm[m], 1, infile);
+    n = fread(tempV->value, sizeof(float) * tempNm[m], 1, infile);
     InsertSparseVector(tempM, tempV, m);
   }
   fclose(infile);
-
+  (void)n;
   Free(tempNm);
   return (tempM);
 }
@@ -842,7 +843,7 @@ Vector *SubtractVector(Vector *vec1, Vector *vec2) {
   int m;
   Vector *tempV;
 
-  if ((vec1->N) != (vec1->N))
+  if ((vec1->N) != (vec2->N))
     Error("The two vectors do not match in length (SubtractVector %i %i)",
           vec1->N,
           vec2->N);
@@ -1354,14 +1355,14 @@ Dec. 94, JJJ
 ***************************************************************/
 void MeanFilterVector(Vector *MyVector, int size, float weight, int M, int N) {
   int Kern, Kerm, n, m, nmin, nmax, mmin, mmax, count;
-  float sum, area, *tempVv, *tempNv, *tempKernM;
+  float sum, /* area, */ *tempVv, *tempNv, *tempKernM;
   Vector *NewVector;
 
   if (MyVector->N != (M * N))
     Error("Incompatible sizez encountered (MeanFilterVector)");
 
   NewVector = InitVector(MyVector->N);
-  area = sq(2 * size + 1);
+  //area = sq(2 * size + 1);
   tempVv = MyVector->value;
 
   for (n = 0 ; n < N ; n++) {
