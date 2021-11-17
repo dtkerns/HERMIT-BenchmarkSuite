@@ -656,7 +656,7 @@ FINT putann(WFDB_Annotator n, WFDB_Annotation *annot) {
             wfdb_p16((unsigned int) (++(oa->seqno)), oa->file);
             (void) wfdb_putc(annot->subtyp, oa->file);
             (void) wfdb_putc(annot->anntyp, oa->file);
-            if (ap = annot->aux)
+            if ((ap = annot->aux))
                 len = (*ap < AUXLEN) ? *ap : AUXLEN;
             else
                 len = 0;
@@ -953,10 +953,11 @@ FFREQUENCY getiafreq(WFDB_Annotator n) {
     struct iadata *ia;
 
     if (n < niaf && (ia = iad[n]) != NULL) {
-        if (ia->afreq > 0.0)
+        if (ia->afreq > 0.0) {
             return (ia->afreq * ia->tmul);
-        else
+        } else {
             return (sampfreq(NULL) * ia->tmul / getspf());
+        }
     } else {
         return (-2);
     }
@@ -967,10 +968,11 @@ FFREQUENCY getiafreq(WFDB_Annotator n) {
 FFREQUENCY getiaorigfreq(WFDB_Annotator n) {
     struct iadata *ia;
 
-    if (n < niaf && (ia = iad[n]) != NULL)
+    if (n < niaf && (ia = iad[n]) != NULL) {
         return (ia->afreq);
-    else
+    } else {
         return (-2);
+    }
 }
 
 /* iannclose: close input annotation file n */

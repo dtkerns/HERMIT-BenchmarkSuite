@@ -476,7 +476,7 @@ static void sigmap_cleanup(void) {
         struct isdata *is;
 
         while (maxvsig)
-            if (is = vsd[--maxvsig]) {
+            if ((is = vsd[--maxvsig])) {
                 SFREE(is->info.fname);
                 SFREE(is->info.units);
                 SFREE(is->info.desc);
@@ -1002,7 +1002,7 @@ static int readheader(const char *record) {
     nsig = (unsigned) strtol(p, NULL, 10);
 
     /* Determine the frame rate, if present and not set already. */
-    if (p = strtok((char *) NULL, sep)) {
+    if ((p = strtok((char *) NULL, sep))) {
         if ((f = (WFDB_Frequency) strtod(p, NULL)) <= (WFDB_Frequency) 0.) {
             wfdb_error(
                     "init: sampling frequency in record %s header is incorrect\n",
@@ -1040,7 +1040,7 @@ static int readheader(const char *record) {
 
     /* Determine the number of samples per signal, if present and not
        set already. */
-    if (p = strtok((char *) NULL, sep)) {
+    if ((p = strtok((char *) NULL, sep))) {
         if ((ns = (WFDB_Time) strtol(p, NULL, 10)) < 0L) {
             wfdb_error(
                     "init: number of samples in record %s header is incorrect\n",
@@ -1200,7 +1200,7 @@ static int readheader(const char *record) {
 
         /* Determine the gain in ADC units per physical unit.  This number
 	   may be zero or missing;  if so, the signal is uncalibrated. */
-        if (p = strtok((char *) NULL, sep))
+        if ((p = strtok((char *) NULL, sep)))
             hs->info.gain = (WFDB_Gain) strtod(p, NULL);
         else
             hs->info.gain = (WFDB_Gain) 0.;
@@ -1228,7 +1228,7 @@ static int readheader(const char *record) {
         /* Determine the ADC resolution in bits.  If this number is
 	   missing and cannot be inferred from the format, the default
 	   value (from wfdb.h) is filled in. */
-        if (p = strtok((char *) NULL, sep))
+        if ((p = strtok((char *) NULL, sep)))
             i = (unsigned) strtol(p, NULL, 10);
         else
             switch (hs->info.fmt) {
@@ -1264,7 +1264,7 @@ static int readheader(const char *record) {
         hs->info.initval = (p = strtok((char *) NULL, sep)) ? strtol(p, NULL, 10) : hs->info.adczero;
 
         /* Determine the checksum (assumed to be zero if missing). */
-        if (p = strtok((char *) NULL, sep)) {
+        if ((p = strtok((char *) NULL, sep))) {
             hs->info.cksum = strtol(p, NULL, 10);
             hs->info.nsamp = ns;
         } else {
@@ -1288,7 +1288,7 @@ static int readheader(const char *record) {
         /* Get the signal description.  If missing, a description of
 	   the form "record xx, signal n" is filled in. */
         SALLOC(hs->info.desc, 1, WFDB_MAXDSL + 1);
-        if (p = strtok((char *) NULL, "\n\r"))
+        if ((p = strtok((char *) NULL, "\n\r")))
             (void) strncpy(hs->info.desc, p, WFDB_MAXDSL);
         else
             (void) sprintf(hs->info.desc,
@@ -1302,7 +1302,7 @@ static void hsdfree(void) {
 
     if (hsd) {
         while (maxhsig)
-            if (hs = hsd[--maxhsig]) {
+            if ((hs = hsd[--maxhsig])) {
                 SFREE(hs->info.fname);
                 SFREE(hs->info.units);
                 SFREE(hs->info.desc);
@@ -1323,7 +1323,7 @@ static void isigclose(void) {
     }
     if (isd) {
         while (maxisig)
-            if (is = isd[--maxisig]) {
+            if ((is = isd[--maxisig])) {
                 SFREE(is->info.fname);
                 SFREE(is->info.units);
                 SFREE(is->info.desc);
@@ -1336,7 +1336,7 @@ static void isigclose(void) {
 
     if (igd) {
         while (maxigroup)
-            if (ig = igd[--maxigroup]) {
+            if ((ig = igd[--maxigroup])) {
                 if (ig->fp) (void) wfdb_fclose(ig->fp);
                 SFREE(ig->buf);
                 SFREE(ig);
@@ -1368,7 +1368,7 @@ static void osigclose(void) {
 
     if (osd) {
         while (maxosig)
-            if (os = osd[--maxosig]) {
+            if ((os = osd[--maxosig])) {
                 SFREE(os->info.fname);
                 SFREE(os->info.units);
                 SFREE(os->info.desc);
@@ -1380,7 +1380,7 @@ static void osigclose(void) {
 
     if (ogd) {
         while (maxogroup)
-            if (og = ogd[--maxogroup]) {
+            if ((og = ogd[--maxogroup])) {
                 if (og->fp) {
                     /* If a block size has been defined, null-pad the buffer */
                     if (og->bsize)
@@ -1757,7 +1757,7 @@ static int isgsetframe(WFDB_Group g, WFDB_Time t) {
 	       functional for multi-segment records, because it cannot
 	       read signals from two different segments at once.) */
             for (h = 1; h < nigroup; h++)
-                if (i = isgsetframe(h, t))
+                if ((i = isgsetframe(h, t)))
                     return (i);
             if (g == 0)
                 return (isgsetframe(0, t));
@@ -1811,7 +1811,7 @@ static int isgsetframe(WFDB_Group g, WFDB_Time t) {
             if ((nn & 1) && (t & 1)) {
                 if (in_msrec)
                     t += segp->samp0; /* restore absolute time */
-                if (i = isgsetframe(g, t - 1))
+                if ((i = isgsetframe(g, t - 1)))
                     return (i);
                 for (j = 0; j < nn; j++)
                     (void) r212(ig);
@@ -1835,7 +1835,7 @@ static int isgsetframe(WFDB_Group g, WFDB_Time t) {
             if ((nn % 3) && (trem = (t % 3))) {
                 if (in_msrec)
                     t += segp->samp0; /* restore absolute time */
-                if (i = isgsetframe(g, t - trem))
+                if ((i = isgsetframe(g, t - trem)))
                     return (i);
                 for (j = nn * trem; j > 0; j--)
                     (void) r310(ig);
@@ -1859,7 +1859,7 @@ static int isgsetframe(WFDB_Group g, WFDB_Time t) {
             if ((nn % 3) && (trem = (t % 3))) {
                 if (in_msrec)
                     t += segp->samp0; /* restore absolute time */
-                if (i = isgsetframe(g, t - trem))
+                if ((i = isgsetframe(g, t - trem)))
                     return (i);
                 for (j = nn * trem; j > 0; j--)
                     (void) r311(ig);
@@ -2614,7 +2614,7 @@ FVOID setgvmode(int mode) {
     if (mode < 0) { /* (re)set to default mode */
         char *p;
 
-        if (p = getenv("WFDBGVMODE"))
+        if ((p = getenv("WFDBGVMODE")))
             mode = strtol(p, NULL, 10);
         else
             mode = DEFWFDBGVMODE;
@@ -3458,7 +3458,7 @@ FINT setbasetime(char *string) {
         return (0);
     }
     while (*string == ' ') string++;
-    if (p = strchr(string, ' '))
+    if ((p = strchr(string, ' ')))
         *p++ = '\0'; /* split time and date components */
     btime = fstrtim(string, 1000.0);
     bdate = p ? strdat(p) : (WFDB_Date) 0;

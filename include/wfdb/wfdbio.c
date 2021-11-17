@@ -946,12 +946,13 @@ WFDB_FILE *wfdb_open(const char *s, const char *record, int mode) {
         if (*s) {
             record = s;
             s = "";
-        } else
+        } else {
             return (NULL); /* failure -- both components are empty */
+        }
     }
 
     /* Check to see if standard input or output is requested. */
-    if (strcmp(record, "-") == 0)
+    if (strcmp(record, "-") == 0) {
         if (mode == WFDB_READ) {
             static WFDB_FILE wfdb_stdin;
 
@@ -965,6 +966,7 @@ WFDB_FILE *wfdb_open(const char *s, const char *record, int mode) {
             wfdb_stdout.fp = stdout;
             return (&wfdb_stdout);
         }
+    }
 
     /* If the record name ends with '/', expand it by adding another copy of
      the final element (e.g., 'abc/123/' becomes 'abc/123/123'). */
@@ -2060,7 +2062,7 @@ WFDB_FILE *wfdb_fopen(char *fname, const char *mode) {
         SFREE(wp);
         return (NULL);
     }
-    if (wp->fp = fopen(fname, mode)) {
+    if ((wp->fp = fopen(fname, mode))) {
         wp->type = WFDB_LOCAL;
         return (wp);
     }
