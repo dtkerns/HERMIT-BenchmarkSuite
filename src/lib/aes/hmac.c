@@ -41,6 +41,10 @@
 #endif
 #endif
 
+#include "aes.h"
+#include "hash.h"
+#include "md5.h"
+#include "sha256.h"
 #include "hmac.h"
 
 #ifdef WOLF_CRYPTO_CB

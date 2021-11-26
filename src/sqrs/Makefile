@@ -1,8 +1,9 @@
 
 CC ?= gcc
 
-CFILES = $(wildcard *.c)
-INCFILES = $(wildcard include/*.c) $(wildcard include/*.h)
+CFILES = sqrs.c
+CPPFLAGS += -I../include
+LDFLAGS += -L../lib
 
 ifneq ($(ll),)
 CC = clang
@@ -16,7 +17,7 @@ endif
 all: $(XFILES)
 
 $(XFILES): $(CFILES)
-	$(CC) $(CFILES) $(CFLAGS) -o $@
+	$(CC) $(CPPFLAGS) $(CFILES) $(CFLAGS) -o $@ $(LDFLAGS) -lwfdb
 
 clean:
 	rm -f $(XFILES) *.qrs

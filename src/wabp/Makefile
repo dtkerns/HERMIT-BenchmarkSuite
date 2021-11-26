@@ -1,8 +1,9 @@
 
 CC ?= gcc
 
-CFILES = $(wildcard *.c)
-INCFILES = $(wildcard include/*.c) $(wildcard include/*.h)
+CFILES = wabp.c
+CPPFLAGS += -I../include
+LDFLAGS += -L../lib -lwfdb
 
 ifneq ($(ll),)
 CC = clang
@@ -17,7 +18,7 @@ endif
 all: $(XFILES)
 
 $(XFILES):
-	$(CC) $(CFILES) $(CFLAGS) -o $@ $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(CFILES) $(CFLAGS) -o $@ $(LDFLAGS)
 
 clean:
 	rm -f $(XFILES) *.wabp

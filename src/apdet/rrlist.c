@@ -43,11 +43,8 @@ options are :
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../include/wfdb/wfdb.h"
-#include "../../include/wfdb/ecgmap.h"
-#include "../../include/wfdb/signal.c"
-#include "../../include/wfdb/annot.c"
-#include "../../include/wfdb/wfdbio.c"
+#include "wfdb/wfdb.h"
+#include "wfdb/ecgmap.h"
 
 void usage(char *prog)
 {

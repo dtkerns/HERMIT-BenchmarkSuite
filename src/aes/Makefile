@@ -3,6 +3,8 @@ CC ?= gcc
 
 CFILES = $(wildcard *.c)
 INCFILES = $(wildcard include/*.c) $(wildcard include/*.h)
+CPPFLAGS += -I../include/aes
+LDFLAGS += -L../lib -laes
 
 ifneq ($(ll),)
 CC = clang
@@ -17,7 +19,7 @@ endif
 all: $(XFILES)
 
 $(XFILES):
-	$(CC) $(CFILES) $(CFLAGS) -o $@
+	$(CC) $(CPPFLAGS) $(CFILES) $(CFLAGS) -o $@ $(LDFLAGS)
 
 clean:
 	rm -f $(XFILES)

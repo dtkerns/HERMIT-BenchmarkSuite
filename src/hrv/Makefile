@@ -55,7 +55,7 @@ pwr :		pwr.c
 	$(CC) -O -o $@ $^
 
 rrlist :	rrlist.c
-	$(CC) -O -o $@ $^
+	$(CC) -O -o $@ $^ -I../include -L../lib -lwfdb
 
 seconds :	seconds.c
 	$(CC) -O -o $@ $^

@@ -23,23 +23,17 @@
 #include <unistd.h>
 #include <termios.h>
 
-#include "../../include/aes/aes.h"
-#include "../../include/aes/aes.c"
-#include "../../include/aes/hash.h"
-#include "../../include/aes/hash.c"
-#include "../../include/aes/hmac.h"
-#include "../../include/aes/hmac.c"
-#include "../../include/aes/integer.h"
-#include "../../include/aes/integer.c"
-#include "../../include/aes/memory.h"
-#include "../../include/aes/memory.c"
-#include "../../include/aes/pwdbased.h"
-#include "../../include/aes/pwdbased.c"
-#include "../../include/aes/random.h"
-#include "../../include/aes/random.c"
-#include "../../include/aes/sha256.h"
-#include "../../include/aes/sha256.c"
-#include "../../include/aes/types.h"
+#include "aes.h"
+#include "md5.h"
+#include "sha.h"
+#include "hash.h"
+#include "hmac.h"
+#include "integer.h"
+#include "memory.h"
+#include "pwdbased.h"
+#include "random.h"
+#include "sha256.h"
+#include "types.h"
 
 #define SALT_SIZE 8
 

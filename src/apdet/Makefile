@@ -56,8 +56,8 @@ linsamp :	linsamp.c
 mm :		mm.c
 	$(CC) -O -o $@ $^
 
-rrlist :	rrlist.c ../../include/wfdb/signal.c
-	$(CC) -O -o $@ $<
+rrlist :	rrlist.c
+	$(CC) -O -o $@ $< -I../include -L../lib -lwfdb
 
 smooth :	smooth.c
 	$(CC) -O -o $@ $^

@@ -43,13 +43,9 @@ MA 02139, USA). For updates to this software, please visit PhysioNet (http://www
 --------------------------------------------------------------------------------
 */
 
-#include "../../include/wfdb/annot.c"
-#include "../../include/wfdb/ecgcodes.h"
-#include "../../include/wfdb/signal.c"
-#include "../../include/wfdb/wfdb.h"
-#include "../../include/wfdb/wfdbinit.c"
-#include "../../include/wfdb/wfdbio.c"
-#include "../../include/wfdb/wfdblib.h"
+#include "wfdb/ecgcodes.h"
+#include "wfdb/wfdb.h"
+#include "wfdb/wfdblib.h"
 #include <ctype.h>
 #include <stdio.h>
 
