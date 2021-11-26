@@ -56,10 +56,11 @@ Ankur Limaye and Tosiron Adegbija, "[HERMIT: A Benchmark Suite for the Internet 
 
 ## Folder structure
 
-    \bin (HERMIT binaries are copied to this folder after building)
-    \include (Includes files necessary for building HERMIT applications)
-    \inputs (Contains test-inputs)
-    \prebuilt-bin-riscv (Contains HERMIT binaries cross-compiled for RISC-V)
-    \prebuilt-bin-x86 (Contains HERMIT binaries cross-compiled for x86)
-    \scripts (Contains scripts to run HERMIT binaries)
-    \src (HERMIT application source files)
+    /bin (HERMIT binaries are copied to this folder after building)
+    /inputs (Contains test-inputs)
+    /prebuilt-bin-riscv (Contains HERMIT binaries cross-compiled for RISC-V)
+    /prebuilt-bin-x86 (Contains HERMIT binaries cross-compiled for x86)
+    /scripts (Contains scripts to run HERMIT binaries)
+    /src (HERMIT application source files)
+    /src/include (Includes files necessary for building HERMIT applications)
+    /src/lib (local aes and wfdb libraries used by HERMIT apps)
