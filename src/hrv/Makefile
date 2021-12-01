@@ -22,7 +22,7 @@ endif
 all:		$(ALL)
 
 %.ll : %.c
-	clang -S -emit-llvm $^ -o $@
+	clang -S -emit-llvm -I../include $^ -o $@
 
 # 'make install' copies the HRV toolkit's scripts and binaries to BINDIR.
 install:	all

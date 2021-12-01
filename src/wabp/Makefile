@@ -3,7 +3,6 @@ CC ?= gcc
 
 CFILES = wabp.c
 CPPFLAGS += -I../include
-LDFLAGS += -L../lib -lwfdb
 
 ifneq ($(ll),)
 CC = clang
@@ -13,6 +12,7 @@ else
 CFLAGS += -static
 LDFLAGS += -lm
 XFILES = wabp
+LDFLAGS += -L../lib -lwfdb
 endif
 
 all: $(XFILES)

@@ -24,7 +24,7 @@ clean :
 	rm -f $(ALL) *.o *~ core
 
 %.ll: %.c
-	clang -S -emit-llvm $^ -o $@
+	clang -S -emit-llvm -I../include $^ -o $@
 
 apdet :		apdet.c
 	$(CC) -O -o $@ $^ -lm
