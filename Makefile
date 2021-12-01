@@ -35,12 +35,11 @@ lzw :
 $(kernels) : aes lzw
 	$(MAKE) -C $(srcDir)/$@
 	$(if $(ll),,mkdir -p $(binDir)/$@)
-	$(if $(ll),,mv $(srcDir)/$@/$@ $(binDir)/$@)
-	$(if $(ll),,cp $(binDir)/aes/aes $(binDir)/$@/)
-	$(if $(ll),,cp $(binDir)/lzw/lzw $(binDir)/$@/)
-	$(if $(ll),,cp $(inputsDir)/$@/* $(binDir)/$@/)
-	$(if $(ll),,cp $(scriptDir)/run-$@.sh $(binDir)/$@/)
+	$(if $(ll),,-mv $(srcDir)/$@/$@ $(binDir)/$@)
+	$(if $(ll),,-cp $(inputsDir)/$@/* $(binDir)/$@/)
+	$(if $(ll),,-cp $(scriptDir)/run-$@.sh $(binDir)/$@/)
 
 .PHONY : clean
 clean :
 	rm -rf $(binDir)
+	for i in $(kernels) $(suppKernels); do $(MAKE) -C $(srcDir)/$$i $@; done
