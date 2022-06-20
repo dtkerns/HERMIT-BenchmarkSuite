@@ -849,7 +849,7 @@ Image *CentralSliceCZ(Image *MyImage) {
     if ((m <= MyImage->M / 4) || (m > MyImage->M / 4 * 3)) {
       InvMyImage->Signal[m] = ComplexChirpZ(tempimage->Signal[m], tempimage->N, tempimage->N,
                                             0.0, fabs(0.5 / (tempimage->N * cos(realtheta[m]))), _FFT);
-      for (n = (int) abs(cos(realtheta[m]) * tempimage->N) ; n < InvMyImage->N ; n++) {
+      for (n = (int) fabs(cos(realtheta[m]) * tempimage->N) ; n < InvMyImage->N ; n++) {
         InvMyImage->Signal[m][2 * n] = 0;
         InvMyImage->Signal[m][2 * n + 1] = 0;
       }
